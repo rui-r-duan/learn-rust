@@ -1,0 +1,68 @@
+* rustup
+  rustup update
+  rustup doc --book
+* cargo
+  cargo run
+  cargo build --verbose
+  cargo update
+  RUST_BACKTRACE=1 cargo run --verbose
+  RUST_BACKTRACE=full cargo run
+* rustc
+  rustc --explain E0308
+* THOUGHTS
+** Don't use variable shadowing.
+#+begin_quote
+  This feature is often used in situations in which you want to convert a value
+  from one type to another type.  Shadowing lets us reuse the 'guess' variable
+  name rahter than forcing us to create two unique variables, such as
+  'guess_str' and 'guess' for example.
+#+end_quote
+  However, it makes people hard to find its definition.  Let's see if tools can
+  help find the accurate definition in one go.
+** Try to write the variable type explicitly.
+  Try to avoid using the type inference.
+** Don't encode the variable type in the variable name.
+** Don't use the "return value" of an operation.
+#+begin_src rust
+  let mut y = 5;
+  let x = (y = 6);		// x has the value '()', not '6'
+#+end_src
+  This feature is to make sure that every expression to have a value, including
+  the assignment operation/expression.
+
+  The fundamental design fault is that they use an empty tuple to denote a void
+  type.
+
+  Rust allows you to propogate a meaningless return type of an statement like
+  expression.  If this kind of error is not caught and is propogated to other
+  places, it will be difficult to find the root cause, and this issue may cause
+  runtime errors or type checking errors.
+
+  The same design fault lives in JavaScript and PHP where the meaningless
+  "undefined" is spreaded over the whole program.
+** Write explicit "return" to indicate the exits of a function.
+   Make it obvious for our "eye parsing".
+
+   Exception: when a function has only one exit point in the text, "return" can
+   be omitted.
+** A good example of the use of enum type (union type) to enfoce exception handling
+#+begin_verse
+   Compiling guessing-game v0.1.0 (/Users/rduan/mygitlab/study-rust/guessing-game)
+error[E0308]: mismatched types
+  --> src/main.rs:20:22
+   |
+20 |     let guess: u32 = guess.trim().parse();//.expect("Please type a number!");
+   |                ---   ^^^^^^^^^^^^^^^^^^^^ expected `u32`, found enum `Result`
+   |                |
+   |                expected due to this
+   |
+   = note: expected type `u32`
+              found enum `Result<_, _>`
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `guessing-game`
+
+To learn more, run the command again with --verbose.
+#+end_verse
