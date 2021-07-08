@@ -21,7 +21,7 @@
   help find the accurate definition in one go.
 ** Try to write the variable type explicitly.
   Try to avoid using the type inference.
-** Don't encode the variable type in the variable name.
+  Don't encode the variable type in the variable name.
 ** Don't use the "return value" of an operation.
 #+begin_src rust
   let mut y = 5;
