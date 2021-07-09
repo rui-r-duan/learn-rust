@@ -72,3 +72,82 @@ To learn more, run the command again with --verbose.
       println!("{}", std::any::type_name::<T>())
   }
 #+end_src
+* reasons to adopt Rust in our projects
+  - advanced tool to aid us to design and code
+    - type safety
+      - no the billion-dollar bug (null bug)
+      - safer error handling than Go and other nullable language, compiler can
+        aid us and protect us
+    - easy concurrency and reasoning (human understanding) by declarative
+      computing
+      - immutable variable by default
+      - support closure which facilitates functional programming paradigm
+    - modern built-in types and types from the standard library (using old
+      languages, we have to tweak the old types for good practices nowadays)
+  - prototyping and enough optimization in one go, compared to quick
+    prototyping and hard and long optimization in Python
+  - save cloud cost by
+    - extremely high runtime speed (can serve more requests per second)
+      comparable to C/C++
+    - small memory footprints
+    - small container images
+  - modern tooling
+    - very helpful compiler
+    - specialized build system included (i.e. cargo) vs. C++'s GNU Make
+    - documentation tools (e.g. rustup doc)
+  - expressive and concise
+    - less boilerplate code than Java and C++
+    - more expressive and elegant than Go
+      - support Generic
+	- consider a use case where we need to sort entries of a user defined
+          type, Go's implementation is tedious
+	- In Go, people tend to abuse interface{} to hold unknown type of data,
+          which bypasses the type safety checking
+      - better trade-off than Go
+        - Go hard-codes hash table into the language, whereas Rust uses library
+  - modern package and module management
+  - good community
+    - strong language developers
+    - friendly and supportive
+    - backing by large companies (Mozilla, Microsoft, Amazon, Google, etc.)
+  - better FFI than Go
+* cons compared to Python
+  - no REPL
+  - harder to learn
+  - burden to manipulate the object memory ownership
+  - less mature in the ecosystem
+  - a little less coding speed
+* cons compared to Swift
+  - no REPL
+  - syntax being more elaborate
+* cons compared to C++
+  - less mature in the ecosystem
+* cons compared to Java 8
+  - less mature in the ecosystem
+* cons compared to Go
+  - less mature in the ecosystem
+  - harder to learn
+* cons compared to Common Lisp
+  - no REPL
+  - no meta programming control in the compile time and load time
+  - not "data as code" and "code as data"
+* compare with Oz
+** pros
+   - much better string type
+   - better
+** cons
+   - no tail call optimization which leads to a crippled support for recursion,
+     which leads to less descriptive programming paradigm.
+   - no difference list
+   - conceptually more complicated types for pattern matching.  In Oz, Record
+     type suffices.
+   - quirks due to the expression-based design
+     I like Oz's design better: procedure and functions are different types.
+     e.g.
+     - operations return an empty tuple
+     - placing a semicolon turns an expression to a statement
+
+* compared to Swift
+https://dev.to/rhymu8354/swift-vs-rust-an-overview-of-swift-from-a-rusty-perspective-18c7
+* It is a design error to use an empty tuple to denote the Void type
+  I like the Oz's design: an operation does not return anything.
