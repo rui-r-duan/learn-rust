@@ -29,13 +29,13 @@ fn mode(a: &Vec<i32>) -> i32 {
     let (mut max_key, mut max_freq) = (-1, -1);
     // print_type_of(&max_key);
     // print_type_of(&max_freq);
-    for (k, c) in &count {
+    for (&k, &c) in &count {
 	// println!("{} {}", k, c);
 	// print_type_of(&k);
 	// print_type_of(&c);
-	if *c > max_freq {
-	    max_freq = *c;
-	    max_key = *k;
+	if c > max_freq {
+	    max_freq = c;
+	    max_key = k;
 	}
     }
     max_key
