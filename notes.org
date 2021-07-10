@@ -10,7 +10,7 @@
 * rustc
   rustc --explain E0308
 * THOUGHTS
-** Don't use variable shadowing.
+** Don't abuse variable shadowing.
 #+begin_quote
   This feature is often used in situations in which you want to convert a value
   from one type to another type.  Shadowing lets us reuse the 'guess' variable
@@ -19,9 +19,6 @@
 #+end_quote
   However, it makes people hard to find its definition.  Let's see if tools can
   help find the accurate definition in one go.
-** Try to write the variable type explicitly.
-  Try to avoid using the type inference.
-  Don't encode the variable type in the variable name.
 ** Don't use the "return value" of an operation.
 #+begin_src rust
   let mut y = 5;
@@ -40,11 +37,6 @@
 
   The same design fault lives in JavaScript and PHP where the meaningless
   "undefined" is spreaded over the whole program.
-** Write explicit "return" to indicate the exits of a function.
-   Make it obvious for our "eye parsing".
-
-   Exception: when a function has only one exit point in the text, "return" can
-   be omitted.
 ** A good example of the use of enum type (union type) to enfoce exception handling
 #+begin_verse
    Compiling guessing-game v0.1.0 (/Users/rduan/mygitlab/study-rust/guessing-game)
@@ -146,7 +138,6 @@ To learn more, run the command again with --verbose.
      e.g.
      - operations return an empty tuple
      - placing a semicolon turns an expression to a statement
-
 * compared to Swift
 https://dev.to/rhymu8354/swift-vs-rust-an-overview-of-swift-from-a-rusty-perspective-18c7
 * It is a design error to use an empty tuple to denote the Void type
