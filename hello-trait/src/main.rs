@@ -20,12 +20,10 @@
 fn largest<T: PartialOrd>(list: &[T]) -> &T {
     let mut largest_index = 0;
 
-    let mut i = 0;
-    for item in list {
+    for (i, item) in list.iter().enumerate() {
         if item > &list[largest_index] {
             largest_index = i;
         }
-	i += 1;
     }
 
     &list[largest_index]
