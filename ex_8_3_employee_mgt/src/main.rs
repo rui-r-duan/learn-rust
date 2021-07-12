@@ -14,6 +14,7 @@ fn help() {
 
 enum EvalResult {
     Good,
+    BadSyntax,
     Exit,
 }
 
@@ -27,6 +28,10 @@ fn main() {
 
         match eval_cmd(&cmd) {
             EvalResult::Good => continue,
+            EvalResult::BadSyntax => {
+                println!("Invalid command");
+                help();
+            }
             EvalResult::Exit => break,
         }
     }
@@ -34,7 +39,7 @@ fn main() {
 
 fn prompt() {
     print!(">>> ");
-    io::stdout().flush().unwrap();
+    io::stdout().flush().expect("Failed to flush stdout");
 }
 
 fn read_cmd() -> String {
@@ -52,44 +57,62 @@ fn eval_cmd(cmd: &str) -> EvalResult {
     match iter.next() {
         Some(x) => match x {
             "Add" => {
-                eval_add_args(&mut iter);
+                return eval_add_args(&mut iter);
             }
             "List" => {
-                eval_list_args(&mut iter);
+                return eval_list_args(&mut iter);
             }
             "q" => {
                 return EvalResult::Exit;
             }
             _ => {
-		println!("Invalid command");
-                help();
+                return EvalResult::BadSyntax;
             }
         },
         None => {
-	    println!("Invalid command");
-            help();
+            return EvalResult::BadSyntax;
         }
     }
-    EvalResult::Good
 }
 
-fn eval_add_args(iter: &mut SplitAsciiWhitespace) {
-    let employee = iter.next().unwrap();
+fn eval_add_args(iter: &mut SplitAsciiWhitespace) -> EvalResult {
+    let employee: &str;
+    match iter.next() {
+	Some(x) => {
+	    employee = x;
+	}
+	None => {
+	    return EvalResult::BadSyntax;
+	}
+    }
 
     match iter.next() {
         Some(x) => {
             if x != "to" {
-		println!("Invalid command");
-                help();
+                return EvalResult::BadSyntax;
             }
         }
         None => {
-	    println!("Invalid command");
-            help();
+            return EvalResult::BadSyntax;
         }
     }
 
-    let department = iter.next().unwrap();
+    let department: &str;
+    match iter.next() {
+	Some(x) => {
+	    department = x;
+	}
+	None => {
+	    return EvalResult::BadSyntax;
+	}
+    }
+
+    match iter.next() {
+        Some(_) => {
+            return EvalResult::BadSyntax;
+        }
+        None => ()
+    }
 
     let mut map = HashMap::new(); // employee => department
     map.insert(employee, department);
@@ -98,10 +121,12 @@ fn eval_add_args(iter: &mut SplitAsciiWhitespace) {
         println!("{} in {}", key, value);
     }
 
-    io::stdout().flush().unwrap();
+    io::stdout().flush().expect("Failed to flush stdout");
+
+    EvalResult::Good
 }
 
-fn eval_list_args(iter: &mut SplitAsciiWhitespace) {
+fn eval_list_args(iter: &mut SplitAsciiWhitespace) -> EvalResult {
     match iter.next() {
         Some(x) => {
             println!("list all employees in department {}", x);
@@ -110,4 +135,6 @@ fn eval_list_args(iter: &mut SplitAsciiWhitespace) {
             println!("list all employees");
         }
     }
+
+    EvalResult::Good
 }
