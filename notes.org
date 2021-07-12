@@ -160,3 +160,62 @@ https://dev.to/rhymu8354/swift-vs-rust-an-overview-of-swift-from-a-rusty-perspec
   const ANSI_WHITE: &str = "\x1b[0;37m";
   const ANSI_RESET: &str = "\x1b[0m";
 #+end_src
+* idioms
+** open file and read to string
+The following four versions are equivalent.
+
+#+begin_src rust
+  use std::fs;
+  use std::io;
+
+  fn read_username_from_file() -> Result<String, io::Error> {
+      fs::read_to_string("hello.txt")
+  }
+#+end_src
+
+#+begin_src rust
+  use std::fs::File;
+  use std:io;
+  use std::io::Read;
+
+  fn read_username_from_file() -> Result<String, io::Error> {
+      let mut s = String::new();
+      File::open("hello.txt")?.read_to_string(&mut s)?;
+      Ok(s)
+  }
+#+end_src
+
+#+begin_src rust
+  use std::fs::File;
+  use std::io;
+  use std::io::Read;
+
+  fn read_username_from_file() -> Result<String, io::Error> {
+      let mut f = File::open("hello.txt")?;
+      let mut s = String::new();
+      f.read_to_string(&mut s)?;
+      Ok(s)
+  }
+#+end_src
+
+#+begin_src rust
+  use std::fs::File;
+  use std::io;
+  use std::io::Read;
+
+  fn read_username_from_file() -> Result<String, io::Error> {
+      let f = File::open("hello.txt");
+
+      let mut f = match f {
+	  Ok(file) => file,
+	  Err(e) => return Err(e),
+      };
+
+      let mut s = String::new();
+
+      match f.read_to_string(&mut s) {
+	  Ok(_) => Ok(s),
+	  Err(e) => Err(e),
+      }
+  }
+#+end_src
