@@ -4,11 +4,11 @@ use std::str::SplitAsciiWhitespace;
 
 fn help() {
     println!(
-        "Usage:
-* add an employee: Add <employee name> to <department name>
-* retrieve people (two HashMap solution): List [department name]
-* retrieve people (one HashMap solution): SlowList [department name]
-* quit: q
+        "Usage (case sensitive):
+* Add an employee: Add <employee name> to <department name>
+* Retrieve people (two HashMap solution): List [department name]
+* Retrieve people (one HashMap solution): SlowList [department name]
+* Quit: q | quit | exit
 "
     );
 }
@@ -80,15 +80,15 @@ fn eval_cmd(cmd: &str, ctx: &mut Context) -> EvalResult {
             "SlowList" => {
                 return eval_slow_list_args(&mut iter, ctx);
             }
-            "q" => {
+            "q" | "quit" | "exit" => {
                 return EvalResult::Exit;
             }
             _ => {
                 return EvalResult::BadSyntax;
             }
         },
-        None => {
-            return EvalResult::BadSyntax;
+        None => {		// empty input, do nothing
+            return EvalResult::Good;
         }
     }
 }
