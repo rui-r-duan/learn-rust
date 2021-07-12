@@ -6,7 +6,8 @@ fn help() {
     println!(
         "Usage:
 * add an employee: Add <employee name> to <department name>
-* retrieve people: List [department name]
+* retrieve people (two HashMap solution): List [department name]
+* retrieve people (one HashMap solution): SlowList [department name]
 * quit: q
 "
     );
@@ -22,7 +23,7 @@ struct Context {
     // employee => department
     employees: HashMap<String, String>,
 
-    // department => demployee
+    // department => employee
     departments: HashMap<String, Vec<String>>,
 }
 
@@ -75,6 +76,9 @@ fn eval_cmd(cmd: &str, ctx: &mut Context) -> EvalResult {
             }
             "List" => {
                 return eval_list_args(&mut iter, ctx);
+            }
+            "SlowList" => {
+                return eval_slow_list_args(&mut iter, ctx);
             }
             "q" => {
                 return EvalResult::Exit;
@@ -145,7 +149,7 @@ fn exec_add(employee: &str, department: &str, ctx: &mut Context) {
         println!("{}'s old department: {}", employee, old_dep);
         println!("{}'s new department: {}", employee, department);
 
-        // Overwrite the record in Employees table
+        // Overwrite the record in employees table
         ctx.employees
             .insert(employee.to_string(), department.to_string());
 
@@ -188,6 +192,8 @@ fn eval_list_args(iter: &mut SplitAsciiWhitespace, ctx: &mut Context) -> EvalRes
     match iter.next() {
         Some(dep) => {
             println!("All employees in department {}:", dep);
+
+            // O(1) to find the employee_list for the department
             match ctx.departments.get(dep) {
                 Some(employee_list) => {
                     for elm in employee_list {
@@ -195,8 +201,39 @@ fn eval_list_args(iter: &mut SplitAsciiWhitespace, ctx: &mut Context) -> EvalRes
                     }
                 }
                 None => {
-                    println!("No department {} is found", dep);
+                    println!("Department {} is not found", dep);
                 }
+            }
+        }
+        None => {
+            println!("All employees:");
+            for (key, val) in &ctx.employees {
+                println!("{} in {}", key, val);
+            }
+        }
+    }
+
+    io::stdout().flush().expect("Failed to flush stdout");
+
+    EvalResult::Good
+}
+
+fn eval_slow_list_args(iter: &mut SplitAsciiWhitespace, ctx: &mut Context) -> EvalResult {
+    match iter.next() {
+        Some(dep) => {
+            println!("All employees in department {}:", dep);
+
+            // O(N) to find the employee_list for the department, where N is
+            // the length of the employees table
+            let mut found = false;
+            for (key, val) in &ctx.employees {
+                if val == dep {
+                    found = true;
+                    println!("{}", key);
+                }
+            }
+            if !found {
+                println!("<<empty>>");
             }
         }
         None => {
