@@ -31,7 +31,7 @@ fn main() {
 
     let mut ctx = Context {
         employees: HashMap::new(),
-	departments: HashMap::new(),
+        departments: HashMap::new(),
     };
 
     loop {
@@ -89,7 +89,7 @@ fn eval_cmd(cmd: &str, ctx: &mut Context) -> EvalResult {
     }
 }
 
-fn eval_add_args(iter: &mut SplitAsciiWhitespace, ctx: & mut Context) -> EvalResult {
+fn eval_add_args(iter: &mut SplitAsciiWhitespace, ctx: &mut Context) -> EvalResult {
     let employee: &str;
     match iter.next() {
         Some(x) => {
@@ -128,35 +128,82 @@ fn eval_add_args(iter: &mut SplitAsciiWhitespace, ctx: & mut Context) -> EvalRes
         None => (),
     }
 
-    ctx.employees.insert(employee.to_string(), department.to_string());
-    let vec = ctx.departments.entry(department.to_string()).or_insert(Vec::new());
-    vec.push(employee.to_string());
+    // If there is any error in the execution, it must be unrecoverable, let it panics.
+    exec_add(employee, department, ctx);
 
     println!("Done");
+    println!("Employees Table = {:?}", ctx.employees);
+    println!("Departments Table = {:?}", ctx.departments);
 
     EvalResult::Good
+}
+
+fn exec_add(employee: &str, department: &str, ctx: &mut Context) {
+    if ctx.employees.contains_key(employee) {
+        let old_dep = ctx.employees[employee].to_string();
+
+        println!("{}'s old department: {}", employee, old_dep);
+        println!("{}'s new department: {}", employee, department);
+
+        // Overwrite the record in Employees table
+        ctx.employees
+            .insert(employee.to_string(), department.to_string());
+
+        // Cleanup the entry for the old department in Departments table
+        match ctx.departments.get_mut(&old_dep) {
+            Some(vec) => match vec.iter().position(|x| x == employee) {
+                Some(i) => {
+                    vec.swap_remove(i);
+                    if vec.is_empty() {
+                        ctx.departments.remove(&old_dep);
+                    }
+                }
+                None => {
+                    panic!("Error: Employee table says \"{}\" is in department \"{}\", but in the entry of \"{}\", the employee \"{}\" is not found", employee, old_dep, old_dep, employee);
+                }
+            },
+            None => {
+                panic!("Error: employee \"{}\"'s old department \"{}\" is not found in Department table", employee, old_dep);
+            }
+        }
+
+        // Add the employee to the new department entry in Departments table
+        let vec = ctx
+            .departments
+            .entry(department.to_string())
+            .or_insert(Vec::new());
+        vec.push(employee.to_string());
+    } else {
+        ctx.employees
+            .insert(employee.to_string(), department.to_string());
+        let vec = ctx
+            .departments
+            .entry(department.to_string())
+            .or_insert(Vec::new());
+        vec.push(employee.to_string());
+    }
 }
 
 fn eval_list_args(iter: &mut SplitAsciiWhitespace, ctx: &mut Context) -> EvalResult {
     match iter.next() {
         Some(dep) => {
             println!("All employees in department {}:", dep);
-	    match ctx.departments.get(dep) {
-		Some(employee_list) => {
-		    for elm in employee_list {
-			println!("{}", elm);
-		    }
-		}
-		None => {
-		    println!("No department {} is found", dep);
-		}
-	    }
+            match ctx.departments.get(dep) {
+                Some(employee_list) => {
+                    for elm in employee_list {
+                        println!("{}", elm);
+                    }
+                }
+                None => {
+                    println!("No department {} is found", dep);
+                }
+            }
         }
         None => {
             println!("All employees:");
-	    for (key, val) in &ctx.employees {
-		println!("{} in {}", key, val);
-	    }
+            for (key, val) in &ctx.employees {
+                println!("{} in {}", key, val);
+            }
         }
     }
 
