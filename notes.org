@@ -1,14 +1,20 @@
 * rustup
+#+begin_verse
   rustup update
   rustup doc --book
+#+end_verse
 * cargo
+#+begin_verse
   cargo run
   cargo build --verbose
   cargo update
   RUST_BACKTRACE=1 cargo run --verbose
   RUST_BACKTRACE=full cargo run
+#+end_verse
 * rustc
+#+begin_verse
   rustc --explain E0308
+#+end_verse
 * THOUGHTS
 ** Don't abuse variable shadowing.
 #+begin_quote
@@ -58,13 +64,13 @@ error: could not compile `guessing-game`
 
 To learn more, run the command again with --verbose.
 #+end_verse
-* print type of a variable
+* Print type of a variable
 #+begin_src rust
   fn print_type_of<T>(_: &T) {
       println!("{}", std::any::type_name::<T>())
   }
 #+end_src
-* reasons to adopt Rust in our projects
+* Reasons to adopt Rust in our projects
   - advanced tool to aid us to design and code
     - type safety
       - no the billion-dollar bug (null bug)
@@ -103,27 +109,27 @@ To learn more, run the command again with --verbose.
     - friendly and supportive
     - backing by large companies (Mozilla, Microsoft, Amazon, Google, etc.)
   - better FFI than Go
-* cons compared to Python
+* Cons compared to Python
   - no REPL
   - harder to learn
   - burden to manipulate the object memory ownership
   - less mature in the ecosystem
   - a little less coding speed
-* cons compared to Swift
+* Cons compared to Swift
   - no REPL
   - syntax being more elaborate
-* cons compared to C++
+* Cons compared to C++
   - less mature in the ecosystem
-* cons compared to Java 8
+* Cons compared to Java 8
   - less mature in the ecosystem
-* cons compared to Go
+* Cons compared to Go
   - less mature in the ecosystem
   - harder to learn
-* cons compared to Common Lisp
+* Cons compared to Common Lisp
   - no REPL
   - no meta programming control in the compile time and load time
   - not "data as code" and "code as data"
-* compare with Oz
+* Compare with Oz
 ** pros
    - much better string type
    - better
@@ -138,7 +144,7 @@ To learn more, run the command again with --verbose.
      e.g.
      - operations return an empty tuple
      - placing a semicolon turns an expression to a statement
-* compared to Swift
+* Compared with Swift
 https://dev.to/rhymu8354/swift-vs-rust-an-overview-of-swift-from-a-rusty-perspective-18c7
 * It is a design error to use an empty tuple to denote the Void type
   I like the Oz's design: an operation does not return anything.
