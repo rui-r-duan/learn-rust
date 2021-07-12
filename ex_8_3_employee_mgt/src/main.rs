@@ -132,7 +132,7 @@ fn eval_add_args(iter: &mut SplitAsciiWhitespace, ctx: &mut Context) -> EvalResu
         None => (),
     }
 
-    // If there is any error in the execution, it must be unrecoverable, let it panics.
+    // If there is any error in the execution, it must be unrecoverable, let it panic.
     exec_add(employee, department, ctx);
 
     println!("Done");
