@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 use std::io::{self, Write};
-use std::str::SplitAsciiWhitespace;
 
 fn help() {
     println!(
         "Usage (case sensitive):
 * Add an employee: Add <employee name> to <department name>
-* Retrieve people (two HashMap solution): List [department name]
-* Retrieve people (one HashMap solution): SlowList [department name]
+* Retrieve people of a department (two HashMap solution): List <department name>
+* Retrieve people of a department (one HashMap solution): SlowList <department name>
+* Retrieve all people: List
 * Quit: q | quit | exit
 "
     );
@@ -18,6 +18,9 @@ enum EvalResult {
     BadSyntax,
     Exit,
 }
+
+const ANSI_RED: &str = "\x1b[0;31m";
+const ANSI_RESET: &str = "\x1b[0m";
 
 struct Context {
     // employee => department
@@ -43,7 +46,7 @@ fn main() {
         match eval_cmd(&cmd, &mut ctx) {
             EvalResult::Good => continue,
             EvalResult::BadSyntax => {
-                println!("Invalid command");
+                println!("{}", String::from(ANSI_RED) + "Invalid command" + ANSI_RESET);
                 help();
             }
             EvalResult::Exit => break,
@@ -67,82 +70,43 @@ fn read_cmd() -> String {
 }
 
 fn eval_cmd(cmd: &str, ctx: &mut Context) -> EvalResult {
-    let mut iter = cmd.split_ascii_whitespace();
+    let tokens: Vec<String> = cmd
+        .split_ascii_whitespace()
+        .map(|s| s.to_string())
+        .collect();
 
-    match iter.next() {
-        Some(x) => match x {
-            "Add" => {
-                return eval_add_args(&mut iter, ctx);
-            }
-            "List" => {
-                return eval_list_args(&mut iter, ctx);
-            }
-            "SlowList" => {
-                return eval_slow_list_args(&mut iter, ctx);
-            }
-            "q" | "quit" | "exit" => {
-                return EvalResult::Exit;
-            }
-            _ => {
-                return EvalResult::BadSyntax;
-            }
-        },
-        None => {		// empty input, do nothing
-            return EvalResult::Good;
-        }
+    if tokens.len() == 4 && tokens[0] == "Add" && tokens[2] == "to" {
+        let employee = &tokens[1];
+        let department = &tokens[3];
+
+        // If there is any error in the execution, it must be unrecoverable,
+        // let it panic.
+        exec_add(employee, department, ctx)
+
+    } else if tokens.len() == 2 && tokens[0] == "List" {
+        let dep = &tokens[1];
+	list_in_department(dep, ctx)
+
+    } else if tokens.len() == 2 && tokens[0] == "SlowList" {
+	let dep = &tokens[1];
+	slow_list_in_department(dep, ctx)
+
+    } else if tokens.len() == 1 && tokens[0] == "List" {
+	list_all(ctx)
+
+    } else if tokens.len() == 1 && (tokens[0] == "q" || tokens[0] == "quit" || tokens[0] == "exit")
+    {
+        EvalResult::Exit
+
+    } else if tokens.len() == 0 {
+        EvalResult::Good
+
+    } else {
+        EvalResult::BadSyntax
     }
 }
 
-fn eval_add_args(iter: &mut SplitAsciiWhitespace, ctx: &mut Context) -> EvalResult {
-    let employee: &str;
-    match iter.next() {
-        Some(x) => {
-            employee = x;
-        }
-        None => {
-            return EvalResult::BadSyntax;
-        }
-    }
-
-    match iter.next() {
-        Some(x) => {
-            if x != "to" {
-                return EvalResult::BadSyntax;
-            }
-        }
-        None => {
-            return EvalResult::BadSyntax;
-        }
-    }
-
-    let department: &str;
-    match iter.next() {
-        Some(x) => {
-            department = x;
-        }
-        None => {
-            return EvalResult::BadSyntax;
-        }
-    }
-
-    match iter.next() {
-        Some(_) => {
-            return EvalResult::BadSyntax;
-        }
-        None => (),
-    }
-
-    // If there is any error in the execution, it must be unrecoverable, let it panic.
-    exec_add(employee, department, ctx);
-
-    println!("Done");
-    println!("Employees Table = {:?}", ctx.employees);
-    println!("Departments Table = {:?}", ctx.departments);
-
-    EvalResult::Good
-}
-
-fn exec_add(employee: &str, department: &str, ctx: &mut Context) {
+fn exec_add(employee: &str, department: &str, ctx: &mut Context) -> EvalResult {
     if ctx.employees.contains_key(employee) {
         let old_dep = ctx.employees[employee].to_string();
 
@@ -163,11 +127,14 @@ fn exec_add(employee: &str, department: &str, ctx: &mut Context) {
                     }
                 }
                 None => {
-                    panic!("Error: Employee table says \"{}\" is in department \"{}\", but in the entry of \"{}\", the employee \"{}\" is not found", employee, old_dep, old_dep, employee);
+                    panic!("Error: Employee table says \"{}\" is in department \"{}\", \
+			    but in the entry of \"{}\", the employee \"{}\" \
+			    is not found", employee, old_dep, old_dep, employee);
                 }
             },
             None => {
-                panic!("Error: employee \"{}\"'s old department \"{}\" is not found in Department table", employee, old_dep);
+                panic!("Error: employee \"{}\"'s old department \"{}\" is not found \
+			in Department table", employee, old_dep);
             }
         }
 
@@ -177,73 +144,70 @@ fn exec_add(employee: &str, department: &str, ctx: &mut Context) {
             .entry(department.to_string())
             .or_insert(Vec::new());
         vec.push(employee.to_string());
+
     } else {
         ctx.employees
             .insert(employee.to_string(), department.to_string());
+
         let vec = ctx
             .departments
             .entry(department.to_string())
             .or_insert(Vec::new());
         vec.push(employee.to_string());
     }
-}
 
-fn eval_list_args(iter: &mut SplitAsciiWhitespace, ctx: &mut Context) -> EvalResult {
-    match iter.next() {
-        Some(dep) => {
-            println!("All employees in department {}:", dep);
-
-            // O(1) to find the employee_list for the department
-            match ctx.departments.get(dep) {
-                Some(employee_list) => {
-                    for elm in employee_list {
-                        println!("{}", elm);
-                    }
-                }
-                None => {
-                    println!("Department {} is not found", dep);
-                }
-            }
-        }
-        None => {
-            println!("All employees:");
-            for (key, val) in &ctx.employees {
-                println!("{} in {}", key, val);
-            }
-        }
-    }
-
+    println!("Done");
+    println!("Employees Table = {:?}", ctx.employees);
+    println!("Departments Table = {:?}", ctx.departments);
     io::stdout().flush().expect("Failed to flush stdout");
 
     EvalResult::Good
 }
 
-fn eval_slow_list_args(iter: &mut SplitAsciiWhitespace, ctx: &mut Context) -> EvalResult {
-    match iter.next() {
-        Some(dep) => {
-            println!("All employees in department {}:", dep);
+fn list_in_department(dep: &str, ctx: &Context) -> EvalResult {
+    println!("All employees in department {}:", dep);
 
-            // O(N) to find the employee_list for the department, where N is
-            // the length of the employees table
-            let mut found = false;
-            for (key, val) in &ctx.employees {
-                if val == dep {
-                    found = true;
-                    println!("{}", key);
-                }
-            }
-            if !found {
-                println!("<<empty>>");
+    // O(1) to find the employee_list for the department
+    match ctx.departments.get(dep) {
+        Some(employee_list) => {
+            for elm in employee_list {
+                println!("{}", elm);
             }
         }
         None => {
-            println!("All employees:");
-            for (key, val) in &ctx.employees {
-                println!("{} in {}", key, val);
-            }
+            println!("Department {} is not found", dep);
         }
     }
+    io::stdout().flush().expect("Failed to flush stdout");
 
+    EvalResult::Good
+}
+
+fn slow_list_in_department(dep: &str, ctx: &Context) -> EvalResult {
+    println!("All employees in department {}:", dep);
+
+    // O(N) to find the employee_list for the department, where N is
+    // the length of the employees table
+    let mut found = false;
+    for (key, val) in &ctx.employees {
+        if val == dep {
+            found = true;
+            println!("{}", key);
+        }
+    }
+    if !found {
+        println!("<<empty>>");
+    }
+    io::stdout().flush().expect("Failed to flush stdout");
+
+    EvalResult::Good
+}
+
+fn list_all(ctx: &Context) -> EvalResult {
+    println!("All employees:");
+    for (key, val) in &ctx.employees {
+        println!("{} in {}", key, val);
+    }
     io::stdout().flush().expect("Failed to flush stdout");
 
     EvalResult::Good

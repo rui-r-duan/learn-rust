@@ -148,3 +148,15 @@ To learn more, run the command again with --verbose.
 https://dev.to/rhymu8354/swift-vs-rust-an-overview-of-swift-from-a-rusty-perspective-18c7
 * It is a design error to use an empty tuple to denote the Void type
   I like the Oz's design: an operation does not return anything.
+* ANSI colors
+#+begin_src rust
+  const ANSI_BLACK: &str = "\x1b[0;30m";
+  const ANSI_RED: &str = "\x1b[0;31m";
+  const ANSI_GREEN: &str = "\x1b[0;32m";
+  const ANSI_YELLOW: &str = "\x1b[0;33m";
+  const ANSI_BLUE: &str = "\x1b[0;34m";
+  const ANSI_MAGENTA: &str = "\x1b[0;35m";
+  const ANSI_CYAN: &str = "\x1b[0;36m";
+  const ANSI_WHITE: &str = "\x1b[0;37m";
+  const ANSI_RESET: &str = "\x1b[0m";
+#+end_src
