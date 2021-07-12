@@ -18,15 +18,28 @@ enum EvalResult {
     Exit,
 }
 
+struct Context {
+    // employee => department
+    employees: HashMap<String, String>,
+
+    // department => demployee
+    departments: HashMap<String, Vec<String>>,
+}
+
 fn main() {
     help();
+
+    let mut ctx = Context {
+        employees: HashMap::new(),
+	departments: HashMap::new(),
+    };
 
     loop {
         prompt();
 
         let cmd = read_cmd();
 
-        match eval_cmd(&cmd) {
+        match eval_cmd(&cmd, &mut ctx) {
             EvalResult::Good => continue,
             EvalResult::BadSyntax => {
                 println!("Invalid command");
@@ -52,15 +65,16 @@ fn read_cmd() -> String {
     cmd
 }
 
-fn eval_cmd(cmd: &str) -> EvalResult {
+fn eval_cmd(cmd: &str, ctx: &mut Context) -> EvalResult {
     let mut iter = cmd.split_ascii_whitespace();
+
     match iter.next() {
         Some(x) => match x {
             "Add" => {
-                return eval_add_args(&mut iter);
+                return eval_add_args(&mut iter, ctx);
             }
             "List" => {
-                return eval_list_args(&mut iter);
+                return eval_list_args(&mut iter, ctx);
             }
             "q" => {
                 return EvalResult::Exit;
@@ -75,15 +89,15 @@ fn eval_cmd(cmd: &str) -> EvalResult {
     }
 }
 
-fn eval_add_args(iter: &mut SplitAsciiWhitespace) -> EvalResult {
+fn eval_add_args(iter: &mut SplitAsciiWhitespace, ctx: & mut Context) -> EvalResult {
     let employee: &str;
     match iter.next() {
-	Some(x) => {
-	    employee = x;
-	}
-	None => {
-	    return EvalResult::BadSyntax;
-	}
+        Some(x) => {
+            employee = x;
+        }
+        None => {
+            return EvalResult::BadSyntax;
+        }
     }
 
     match iter.next() {
@@ -99,42 +113,54 @@ fn eval_add_args(iter: &mut SplitAsciiWhitespace) -> EvalResult {
 
     let department: &str;
     match iter.next() {
-	Some(x) => {
-	    department = x;
-	}
-	None => {
-	    return EvalResult::BadSyntax;
-	}
+        Some(x) => {
+            department = x;
+        }
+        None => {
+            return EvalResult::BadSyntax;
+        }
     }
 
     match iter.next() {
         Some(_) => {
             return EvalResult::BadSyntax;
         }
-        None => ()
+        None => (),
     }
 
-    let mut map = HashMap::new(); // employee => department
-    map.insert(employee, department);
+    ctx.employees.insert(employee.to_string(), department.to_string());
+    let vec = ctx.departments.entry(department.to_string()).or_insert(Vec::new());
+    vec.push(employee.to_string());
 
-    for (key, value) in &map {
-        println!("{} in {}", key, value);
-    }
-
-    io::stdout().flush().expect("Failed to flush stdout");
+    println!("Done");
 
     EvalResult::Good
 }
 
-fn eval_list_args(iter: &mut SplitAsciiWhitespace) -> EvalResult {
+fn eval_list_args(iter: &mut SplitAsciiWhitespace, ctx: &mut Context) -> EvalResult {
     match iter.next() {
-        Some(x) => {
-            println!("list all employees in department {}", x);
+        Some(dep) => {
+            println!("All employees in department {}:", dep);
+	    match ctx.departments.get(dep) {
+		Some(employee_list) => {
+		    for elm in employee_list {
+			println!("{}", elm);
+		    }
+		}
+		None => {
+		    println!("No department {} is found", dep);
+		}
+	    }
         }
         None => {
-            println!("list all employees");
+            println!("All employees:");
+	    for (key, val) in &ctx.employees {
+		println!("{} in {}", key, val);
+	    }
         }
     }
+
+    io::stdout().flush().expect("Failed to flush stdout");
 
     EvalResult::Good
 }
