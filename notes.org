@@ -11,6 +11,27 @@
   RUST_BACKTRACE=1 cargo run --verbose
   RUST_BACKTRACE=full cargo run
 #+end_verse
+* cargo test
+#+begin_verse
+  cargo test -- --test-threads=1
+  cargo test -- --show_output
+  cargo test <test_function_name>
+  cargo test <sub_string_of_test_names_including_module_names_plus_function_names>
+  cargo test -- --ignored
+  cargo test --test <integration_test's crate_name or function_name>
+#+end_verse
+
+  In the *<proj_root>/tests/* directory, Cargo will compile each of the files as
+  an individual crate.
+
+  Files in subdirectories of the tests directory don’t get compiled as separate
+  crates or have sections in the test output.
+
+  Common test files must be put in subdirectories, each directory represents a
+  module.  For example, to use "common" module, put the code for common module
+  in *<proj_root>/tests/common/mod.rs*.  If we rename mod.rs to other name,
+  Cargo won't be able to find the module definition, because there is no
+  *<proj_root>/tests/common.rs* as a guide.
 * rustc
 #+begin_verse
   rustc --explain E0308
