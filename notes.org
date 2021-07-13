@@ -242,6 +242,7 @@ The following four versions are equivalent.
 #+end_src
 ** &[String] type is equivalent to &Vec<String>
    It is different from the primitive array type: e.g. [String; 5].
+** return Ok(()) to indicate that the call is for its side effects only
 * Cautions
 ** std::process::exit()
    https://doc.rust-lang.org/std/process/fn.exit.html
