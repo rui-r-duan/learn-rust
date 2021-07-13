@@ -247,3 +247,9 @@ The following four versions are equivalent.
 ** std::process::exit()
    https://doc.rust-lang.org/std/process/fn.exit.html
    [[https://users.rust-lang.org/t/is-rust-cleaning-up-after-exit/9613][Is Rust Cleaning Up After Exit]]
+** str::to_lowercase is not 100% accurate
+From the Rust book:
+#+begin_quote
+While to_lowercase will handle basic Unicode, it won't be 100% accurate.  If we
+were writing a real application, we'd want to do a bit more work here.
+#+end_quote
