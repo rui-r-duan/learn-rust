@@ -1,5 +1,5 @@
 [package]
-name = "mybox-smart-pointer"
+name = "smart-pointer"
 version = "0.1.0"
 edition = "2018"
 
