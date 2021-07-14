@@ -10,6 +10,8 @@
   cargo update
   RUST_BACKTRACE=1 cargo run --verbose
   RUST_BACKTRACE=full cargo run
+  cargo doc          # calls rustdoc
+  cargo doc --open
 #+end_verse
 * cargo test
 #+begin_verse
