@@ -7,11 +7,12 @@
 #+begin_verse
   cargo run
   cargo run -p adder
-
-  cargo build --verbose
-  cargo update
   RUST_BACKTRACE=1 cargo run --verbose
   RUST_BACKTRACE=full cargo run
+
+  cargo build --verbose
+
+  cargo update
 
   cargo doc          # calls rustdoc
   cargo doc --open
@@ -20,6 +21,10 @@
   cargo publish
   cargo yank --vers 1.0.1
   cargo yank --vers 1.0.1 --undo
+
+  cargo install
+
+  cargo --list
 #+end_verse
 * cargo test
 #+begin_verse
