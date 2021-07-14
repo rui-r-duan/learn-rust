@@ -91,6 +91,10 @@ To learn more, run the command again with --verbose.
       println!("{}", std::any::type_name::<T>())
   }
 #+end_src
+* &[String], &Vec<String> and [String; 5]
+  [String; 5] is a primitive array type.
+  &[String] is a slice, it can be a slice of a vector or an array, etc.
+  &Vec<String> is a reference of Vec<String>.
 * Reasons to adopt Rust in our projects
   - advanced tool to aid us to design and code
     - type safety
@@ -244,8 +248,6 @@ The following four versions are equivalent.
       }
   }
 #+end_src
-** &[String] type is equivalent to &Vec<String>
-   It is different from the primitive array type: e.g. [String; 5].
 ** return Ok(()) to indicate that the call is for its side effects only
 ** how to specify the Fn trait bounds
    Most of the time when specifying one of the Fn trait bounds, you can start
