@@ -56,7 +56,17 @@ mod tests {
 
     impl Messenger for MockMessenger {
         fn send(&self, message: &str) {
-            self.sent_messages.borrow_mut().push(String::from(message));
+            // zero RefMut<Vec<String>> at this point
+            self.sent_messages.borrow_mut().push(String::from(message)); // one RefMut<>
+
+            // zero RefMut<> at this point
+            // let mut two_borrow = self.sent_messages.borrow_mut(); // one RefMut<> at this point
+            // two_borrow.push(String::from(message));
+
+            // will have two RefMut<>, which violates the borrowing rules,
+            // and will cause panic
+            // let mut three_borrow = self.sent_messages.borrow_mut(); // two RefMut<> at this point
+            // three_borrow.push(String::from(message));
         }
     }
 
