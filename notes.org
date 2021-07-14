@@ -12,6 +12,10 @@
   RUST_BACKTRACE=full cargo run
   cargo doc          # calls rustdoc
   cargo doc --open
+  cargo login [token]
+  cargo publish
+  cargo yank --vers 1.0.1
+  cargo yank --vers 1.0.1 --undo
 #+end_verse
 * cargo test
 #+begin_verse
