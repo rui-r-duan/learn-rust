@@ -87,6 +87,32 @@ pub fn search_case_insensitive<'a>(
 mod tests {
     use super::*;
 
+    impl Config {
+	fn new_for_test<T>(mut args: T) -> Result<Config, &'static str>
+	where T: Iterator<Item = String>
+	{
+	    args.next();
+
+	    let query = match args.next() {
+		Some(arg) => arg,
+		None => return Err("Didn't get a query string"),
+	    };
+
+	    let filename = match args.next() {
+		Some(arg) => arg,
+		None => return Err("Didn't get a file name"),
+	    };
+
+	    let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
+
+	    Ok(Config {
+		query: query,
+		filename,
+		case_sensitive,
+	    })
+	}
+    }
+
     #[test]
     fn config_new_two_valid_args() {
 	let args = vec![
@@ -94,7 +120,7 @@ mod tests {
 	    String::from("contains?"),
 	    String::from("filename.txt")];
 
-	let config = Config::new(&args).unwrap();
+	let config = Config::new_for_test(args.into_iter()).unwrap();
 
 	assert_eq!("contains?", config.query);
 	assert_eq!("filename.txt", config.filename);
@@ -102,9 +128,10 @@ mod tests {
 
     #[test]
     #[should_panic]
+    #[allow(unused)]
     fn config_new_less_args() {
 	let args = vec!["a".to_string()];
-	let config = Config::new(&args).unwrap();
+	let config = Config::new_for_test(args.into_iter()).unwrap();
     }
 
     #[test]
