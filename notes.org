@@ -1,3 +1,5 @@
+#+OPTIONS: ^:nil
+
 * rustup
 #+begin_verse
   rustup update

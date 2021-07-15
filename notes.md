@@ -1,39 +1,40 @@
 
 # Table of Contents
 
-1.  [rustup](#org2715808)
-2.  [cargo](#orgc390782)
-3.  [cargo test](#org32a87a5)
-4.  [rustc](#org15d6c93)
-5.  [THOUGHTS](#orgf171414)
-    1.  [Don't abuse variable shadowing.](#orgc52aa67)
-    2.  [Don't use the "return value" of an operation.](#org97f5dba)
-    3.  [A good example of the use of enum type (union type) to enfoce exception handling](#orgcfb040c)
-6.  [Print type of a variable](#orgaf0acbe)
-7.  [&[String], &Vec<String> and [String; 5]](#org0e651b3)
-8.  [Reasons to adopt Rust in our projects](#org67819c7)
-9.  [Cons compared to Python](#org22ab781)
-10. [Cons compared to Swift](#org05ef88b)
-11. [Cons compared to C++](#orgcb6898a)
-12. [Cons compared to Java 8](#org7c0bc4b)
-13. [Cons compared to Go](#org2045557)
-14. [Cons compared to Common Lisp](#orgb9e1757)
-15. [Compare with Oz](#org9f50ee2)
-    1.  [pros](#org3f439dd)
-    2.  [cons](#org9b09ab2)
-16. [Compared with Swift](#orgc887994)
-17. [It is a design error to use an empty tuple to denote the Void type](#org56b4855)
-18. [ANSI colors](#orgcb20b08)
-19. [idioms](#org379314b)
-    1.  [open file and read to string](#org076393a)
-    2.  [return Ok(()) to indicate that the call is for its side effects only](#org80d2c4a)
-    3.  [how to specify the Fn trait bounds](#orgc760581)
-20. [Cautions](#org934fec5)
-    1.  [std::process::exit()](#org0610a18)
-    2.  [str::to<sub>lowercase</sub> is not 100% accurate](#orgd0e65ac)
+1.  [rustup](#org634267f)
+2.  [cargo](#orgff42412)
+3.  [cargo test](#org136a9d9)
+4.  [rustc](#orgc228f73)
+5.  [THOUGHTS](#orgb50cd12)
+    1.  [Don't abuse variable shadowing.](#org13b222e)
+    2.  [Don't use the "return value" of an operation.](#orge6aa7f4)
+    3.  [A good example of the use of enum type (union type) to enfoce exception handling](#org937efdc)
+6.  [Print type of a variable](#org3aa1e37)
+7.  [&[String], &Vec<String> and [String; 5]](#orgd3df6be)
+8.  [Reasons to adopt Rust in our projects](#org665545c)
+9.  [Cons compared to Python](#org58c5f6b)
+10. [Cons compared to Swift](#orgd60a56a)
+11. [Cons compared to C++](#orgcb4fafd)
+12. [Cons compared to Java 8](#orge20f211)
+13. [Cons compared to Go](#orga2bb24f)
+14. [Cons compared to Common Lisp](#org4d0ae8a)
+15. [Compare with Oz](#org68d5822)
+    1.  [pros](#org6fe0572)
+    2.  [cons](#org60b63ad)
+16. [Compared with Swift](#orga6e1491)
+17. [It is a design error to use an empty tuple to denote the Void type](#org420be47)
+18. [ANSI colors](#orgf0f5fcf)
+19. [idioms](#orgeb5f7c4)
+    1.  [open file and read to string](#org823fa10)
+    2.  [return Ok(()) to indicate that the call is for its side effects only](#orga9d5bd8)
+    3.  [how to specify the Fn trait bounds](#org444cfb5)
+20. [Cautions](#org17082bd)
+    1.  [std::process::exit()](#org3a9565a)
+    2.  [str::to\_lowercase is not 100% accurate](#org754d69b)
 
 
-<a id="org2715808"></a>
+
+<a id="org634267f"></a>
 
 # rustup
 
@@ -43,15 +44,15 @@ rustup doc &#x2013;book<br />
 </p>
 
 
-<a id="orgc390782"></a>
+<a id="orgff42412"></a>
 
 # cargo
 
 <p class="verse">
 cargo run<br />
 cargo run -p adder<br />
-RUST<sub>BACKTRACE</sub>=1 cargo run &#x2013;verbose<br />
-RUST<sub>BACKTRACE</sub>=full cargo run<br />
+RUST\_BACKTRACE=1 cargo run &#x2013;verbose<br />
+RUST\_BACKTRACE=full cargo run<br />
 <br />
 cargo build &#x2013;verbose<br />
 <br />
@@ -71,21 +72,21 @@ cargo &#x2013;list<br />
 </p>
 
 
-<a id="org32a87a5"></a>
+<a id="org136a9d9"></a>
 
 # cargo test
 
 <p class="verse">
 cargo test &#x2013; &#x2013;test-threads=1<br />
 cargo test &#x2013; &#x2013;show-output<br />
-cargo test <test<sub>function</sub><sub>name</sub>><br />
-cargo test <sub<sub>string</sub><sub>of</sub><sub>test</sub><sub>names</sub><sub>including</sub><sub>module</sub><sub>names</sub><sub>plus</sub><sub>function</sub><sub>names</sub>><br />
+cargo test <test\_function\_name><br />
+cargo test <sub\_string\_of\_test\_names\_including\_module\_names\_plus\_function\_names><br />
 cargo test &#x2013; &#x2013;ignored<br />
-cargo test &#x2013;test <integration<sub>test</sub>'s crate<sub>name</sub> or function<sub>name</sub>><br />
+cargo test &#x2013;test <integration\_test's crate\_name or function\_name><br />
 cargo test -p <crate in a workspace><br />
 </p>
 
-In the **<proj<sub>root</sub>>/tests/** directory, Cargo will compile each of the files as
+In the **<proj\_root>/tests/** directory, Cargo will compile each of the files as
 an individual crate.
 
 Files in subdirectories of the tests directory don’t get compiled as separate
@@ -93,12 +94,12 @@ crates or have sections in the test output.
 
 Common test files must be put in subdirectories, each directory represents a
 module.  For example, to use "common" module, put the code for common module
-in **<proj<sub>root</sub>>/tests/common/mod.rs**.  If we rename mod.rs to other name,
+in **<proj\_root>/tests/common/mod.rs**.  If we rename mod.rs to other name,
 Cargo won't be able to find the module definition, because there is no
-**<proj<sub>root</sub>>/tests/common.rs** as a guide.
+**<proj\_root>/tests/common.rs** as a guide.
 
 
-<a id="org15d6c93"></a>
+<a id="orgc228f73"></a>
 
 # rustc
 
@@ -107,25 +108,25 @@ rustc &#x2013;explain E0308<br />
 </p>
 
 
-<a id="orgf171414"></a>
+<a id="orgb50cd12"></a>
 
 # THOUGHTS
 
 
-<a id="orgc52aa67"></a>
+<a id="org13b222e"></a>
 
 ## Don't abuse variable shadowing.
 
 > This feature is often used in situations in which you want to convert a value
 > from one type to another type.  Shadowing lets us reuse the 'guess' variable
 > name rahter than forcing us to create two unique variables, such as
-> 'guess<sub>str</sub>' and 'guess' for example.
+> 'guess\_str' and 'guess' for example.
 
 However, it makes people hard to find its definition.  Let's see if tools can
 help find the accurate definition in one go.
 
 
-<a id="org97f5dba"></a>
+<a id="orge6aa7f4"></a>
 
 ## Don't use the "return value" of an operation.
 
@@ -147,7 +148,7 @@ The same design fault lives in JavaScript and PHP where the meaningless
 "undefined" is spreaded over the whole program.
 
 
-<a id="orgcfb040c"></a>
+<a id="org937efdc"></a>
 
 ## A good example of the use of enum type (union type) to enfoce exception handling
 
@@ -173,7 +174,7 @@ To learn more, run the command again with &#x2013;verbose.<br />
 </p>
 
 
-<a id="orgaf0acbe"></a>
+<a id="org3aa1e37"></a>
 
 # Print type of a variable
 
@@ -182,7 +183,7 @@ To learn more, run the command again with &#x2013;verbose.<br />
     }
 
 
-<a id="org0e651b3"></a>
+<a id="orgd3df6be"></a>
 
 # &[String], &Vec<String> and [String; 5]
 
@@ -191,7 +192,7 @@ To learn more, run the command again with &#x2013;verbose.<br />
 &Vec<String> is a reference of Vec<String>.
 
 
-<a id="org67819c7"></a>
+<a id="org665545c"></a>
 
 # Reasons to adopt Rust in our projects
 
@@ -235,7 +236,7 @@ To learn more, run the command again with &#x2013;verbose.<br />
 -   better FFI than Go
 
 
-<a id="org22ab781"></a>
+<a id="org58c5f6b"></a>
 
 # Cons compared to Python
 
@@ -246,7 +247,7 @@ To learn more, run the command again with &#x2013;verbose.<br />
 -   a little less coding speed
 
 
-<a id="org05ef88b"></a>
+<a id="orgd60a56a"></a>
 
 # Cons compared to Swift
 
@@ -254,21 +255,21 @@ To learn more, run the command again with &#x2013;verbose.<br />
 -   syntax being more elaborate
 
 
-<a id="orgcb6898a"></a>
+<a id="orgcb4fafd"></a>
 
 # Cons compared to C++
 
 -   less mature in the ecosystem
 
 
-<a id="org7c0bc4b"></a>
+<a id="orge20f211"></a>
 
 # Cons compared to Java 8
 
 -   less mature in the ecosystem
 
 
-<a id="org2045557"></a>
+<a id="orga2bb24f"></a>
 
 # Cons compared to Go
 
@@ -276,7 +277,7 @@ To learn more, run the command again with &#x2013;verbose.<br />
 -   harder to learn
 
 
-<a id="orgb9e1757"></a>
+<a id="org4d0ae8a"></a>
 
 # Cons compared to Common Lisp
 
@@ -285,12 +286,12 @@ To learn more, run the command again with &#x2013;verbose.<br />
 -   not "data as code" and "code as data"
 
 
-<a id="org9f50ee2"></a>
+<a id="org68d5822"></a>
 
 # Compare with Oz
 
 
-<a id="org3f439dd"></a>
+<a id="org6fe0572"></a>
 
 ## pros
 
@@ -299,7 +300,7 @@ To learn more, run the command again with &#x2013;verbose.<br />
 -   smaller memory footprint, e.g. functions don't capture context variables
 
 
-<a id="org9b09ab2"></a>
+<a id="org60b63ad"></a>
 
 ## cons
 
@@ -318,21 +319,21 @@ To learn more, run the command again with &#x2013;verbose.<br />
     captured values
 
 
-<a id="orgc887994"></a>
+<a id="orga6e1491"></a>
 
 # Compared with Swift
 
 <https://dev.to/rhymu8354/swift-vs-rust-an-overview-of-swift-from-a-rusty-perspective-18c7>
 
 
-<a id="org56b4855"></a>
+<a id="org420be47"></a>
 
 # It is a design error to use an empty tuple to denote the Void type
 
 I like the Oz's design: an operation does not return anything.
 
 
-<a id="orgcb20b08"></a>
+<a id="orgf0f5fcf"></a>
 
 # ANSI colors
 
@@ -347,12 +348,12 @@ I like the Oz's design: an operation does not return anything.
     const ANSI_RESET: &str = "\x1b[0m";
 
 
-<a id="org379314b"></a>
+<a id="orgeb5f7c4"></a>
 
 # idioms
 
 
-<a id="org076393a"></a>
+<a id="org823fa10"></a>
 
 ## open file and read to string
 
@@ -407,12 +408,12 @@ The following four versions are equivalent.
     }
 
 
-<a id="org80d2c4a"></a>
+<a id="orga9d5bd8"></a>
 
 ## return Ok(()) to indicate that the call is for its side effects only
 
 
-<a id="orgc760581"></a>
+<a id="org444cfb5"></a>
 
 ## how to specify the Fn trait bounds
 
@@ -421,12 +422,12 @@ with Fn and the compiler will tell you if you need FnMut or FnOnce based on
 what happens in the closure body.
 
 
-<a id="org934fec5"></a>
+<a id="org17082bd"></a>
 
 # Cautions
 
 
-<a id="org0610a18"></a>
+<a id="org3a9565a"></a>
 
 ## std::process::exit()
 
@@ -434,12 +435,12 @@ what happens in the closure body.
 [Is Rust Cleaning Up After Exit](https://users.rust-lang.org/t/is-rust-cleaning-up-after-exit/9613)
 
 
-<a id="orgd0e65ac"></a>
+<a id="org754d69b"></a>
 
-## str::to<sub>lowercase</sub> is not 100% accurate
+## str::to\_lowercase is not 100% accurate
 
 From the Rust book:
 
-> While to<sub>lowercase</sub> will handle basic Unicode, it won't be 100% accurate.  If we
+> While to\_lowercase will handle basic Unicode, it won't be 100% accurate.  If we
 > were writing a real application, we'd want to do a bit more work here.
 
