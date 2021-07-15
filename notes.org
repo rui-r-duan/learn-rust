@@ -111,7 +111,9 @@ To learn more, run the command again with --verbose.
 #+end_src
 * &[String], &Vec<String> and [String; 5]
   [String; 5] is a primitive array type.
+
   &[String] is a slice, it can be a slice of a vector or an array, etc.
+
   &Vec<String> is a reference of Vec<String>.
 * Reasons to adopt Rust in our projects
   - advanced tool to aid us to design and code
@@ -136,6 +138,9 @@ To learn more, run the command again with --verbose.
     - very helpful compiler
     - specialized build system included (i.e. cargo) vs. C++'s GNU Make
     - documentation tools (e.g. rustup doc)
+    - good test framework to support TDD
+    - modern package and module system (good trade-off between conventions and
+      flexibility)
   - expressive and concise
     - less boilerplate code than Java and C++
     - more expressive and elegant than Go
@@ -211,6 +216,7 @@ https://dev.to/rhymu8354/swift-vs-rust-an-overview-of-swift-from-a-rusty-perspec
 The following four versions are equivalent.
 
 #+begin_src rust
+  // Version 1
   use std::fs;
   use std::io;
 
@@ -220,6 +226,7 @@ The following four versions are equivalent.
 #+end_src
 
 #+begin_src rust
+  // Version 2
   use std::fs::File;
   use std:io;
   use std::io::Read;
@@ -232,6 +239,7 @@ The following four versions are equivalent.
 #+end_src
 
 #+begin_src rust
+  // Version 3
   use std::fs::File;
   use std::io;
   use std::io::Read;
@@ -245,6 +253,7 @@ The following four versions are equivalent.
 #+end_src
 
 #+begin_src rust
+  // Version 4
   use std::fs::File;
   use std::io;
   use std::io::Read;
@@ -273,6 +282,7 @@ The following four versions are equivalent.
 * Cautions
 ** std::process::exit()
    https://doc.rust-lang.org/std/process/fn.exit.html
+
    [[https://users.rust-lang.org/t/is-rust-cleaning-up-after-exit/9613][Is Rust Cleaning Up After Exit]]
 ** str::to_lowercase is not 100% accurate
 From the Rust book:
