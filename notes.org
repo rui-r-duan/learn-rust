@@ -346,6 +346,15 @@ our code if the values don’t implement the traits that the trait objects need.
       SpreadsheetCell::Float(10.12),
   ];
 #+end_src
+** Option<T>
+#+begin_src rust
+  option.expect()
+  option.take()
+  option.as_ref()
+  option.is_some()
+  option.is_none()
+  option.unwrap()
+#+end_src
 * Cautions
 ** std::process::exit()
    https://doc.rust-lang.org/std/process/fn.exit.html
