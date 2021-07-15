@@ -1,40 +1,40 @@
 
 # Table of Contents
 
-1.  [rustup](#orgbf30d20)
-2.  [cargo](#org142976e)
-3.  [cargo test](#orgb6ab869)
-4.  [rustc](#orgd748255)
-5.  [THOUGHTS](#orgec75dd9)
-    1.  [Don't abuse variable shadowing.](#org57020f9)
-    2.  [Don't use the "return value" of an operation.](#orgbb7a86e)
-    3.  [A good example of the use of enum type (union type) to enfoce exception handling](#org0b5dcd0)
-6.  [Print type of a variable](#orgb7ee88e)
-7.  [&[String], &Vec<String> and [String; 5]](#org18357f3)
-8.  [Reasons to adopt Rust in our projects](#orge88e9bb)
-9.  [Cons compared to Python](#org58160eb)
-10. [Cons compared to Swift](#org9314333)
-11. [Cons compared to C++](#orga02b5c6)
-12. [Cons compared to Java 8](#org8542154)
-13. [Cons compared to Go](#org60be6bb)
-14. [Cons compared to Common Lisp](#org48b14bb)
-15. [Compare with Oz](#orgbefac5a)
-    1.  [pros](#org6f48ab0)
-    2.  [cons](#org6e1df3c)
-16. [Compared with Swift](#orgc016094)
-17. [It is a design error to use an empty tuple to denote the Void type](#org17b5b3f)
-18. [ANSI colors](#orgd682dab)
-19. [idioms](#org3ff6b09)
-    1.  [open file and read to string](#orgae7ba7e)
-    2.  [return Ok(()) to indicate that the call is for its side effects only](#org81d68cd)
-    3.  [how to specify the Fn trait bounds](#orgbeb5eaa)
-20. [Cautions](#orgeb9ad3b)
-    1.  [std::process::exit()](#orgf9db1a3)
-    2.  [str::to\_lowercase is not 100% accurate](#org54a4813)
+1.  [rustup](#org2e0eb64)
+2.  [cargo](#orgc9107bf)
+3.  [cargo test](#org6b8b6c1)
+4.  [rustc](#orgd887aa1)
+5.  [THOUGHTS](#org6e8b8ad)
+    1.  [Don't abuse variable shadowing.](#org3059633)
+    2.  [Don't use the "return value" of an operation.](#org058b3a1)
+    3.  [A good example of the use of enum type (union type) to enfoce exception handling](#orgcd0261b)
+6.  [Print type of a variable](#org90145c0)
+7.  [&[String], &Vec<String> and [String; 5]](#org42a3aea)
+8.  [Reasons to adopt Rust in our projects](#org519c5bc)
+9.  [Cons compared to Python](#org990d802)
+10. [Cons compared to Swift](#org729e754)
+11. [Cons compared to C++](#orgc607861)
+12. [Cons compared to Java 8](#org0a5a90e)
+13. [Cons compared to Go](#org0c3d78f)
+14. [Cons compared to Common Lisp](#org5280bc1)
+15. [Compare with Oz](#org93861db)
+    1.  [pros](#org8ec681c)
+    2.  [cons](#orgabaf2bf)
+16. [Compared with Swift](#org9f990e4)
+17. [It is a design error to use an empty tuple to denote the Void type](#orgd862abc)
+18. [ANSI colors](#orgaf57d8e)
+19. [Idioms](#org786e3dc)
+    1.  [open file and read to string](#orgce0270e)
+    2.  [return Ok(()) to indicate that the call is for its side effects only](#orgefee0d9)
+    3.  [how to specify the Fn trait bounds](#org399a2d5)
+20. [Cautions](#orge11a24f)
+    1.  [std::process::exit()](#org548038a)
+    2.  [str::to\_lowercase is not 100% accurate](#org9458028)
 
 
 
-<a id="orgbf30d20"></a>
+<a id="org2e0eb64"></a>
 
 # rustup
 
@@ -42,7 +42,7 @@
     rustup doc --book
 
 
-<a id="org142976e"></a>
+<a id="orgc9107bf"></a>
 
 # cargo
 
@@ -68,7 +68,7 @@
     cargo --list
 
 
-<a id="orgb6ab869"></a>
+<a id="org6b8b6c1"></a>
 
 # cargo test
 
@@ -93,19 +93,19 @@ Cargo won't be able to find the module definition, because there is no
 **<proj\_root>/tests/common.rs** as a guide.
 
 
-<a id="orgd748255"></a>
+<a id="orgd887aa1"></a>
 
 # rustc
 
     rustc --explain E0308
 
 
-<a id="orgec75dd9"></a>
+<a id="org6e8b8ad"></a>
 
 # THOUGHTS
 
 
-<a id="org57020f9"></a>
+<a id="org3059633"></a>
 
 ## Don't abuse variable shadowing.
 
@@ -118,7 +118,7 @@ However, it makes people hard to find its definition.  Let's see if tools can
 help find the accurate definition in one go.
 
 
-<a id="orgbb7a86e"></a>
+<a id="org058b3a1"></a>
 
 ## Don't use the "return value" of an operation.
 
@@ -140,7 +140,7 @@ The same design fault lives in JavaScript and PHP where the meaningless
 "undefined" is spreaded over the whole program.
 
 
-<a id="org0b5dcd0"></a>
+<a id="orgcd0261b"></a>
 
 ## A good example of the use of enum type (union type) to enfoce exception handling
 
@@ -164,7 +164,7 @@ The same design fault lives in JavaScript and PHP where the meaningless
     To learn more, run the command again with --verbose.
 
 
-<a id="orgb7ee88e"></a>
+<a id="org90145c0"></a>
 
 # Print type of a variable
 
@@ -173,7 +173,7 @@ The same design fault lives in JavaScript and PHP where the meaningless
     }
 
 
-<a id="org18357f3"></a>
+<a id="org42a3aea"></a>
 
 # &[String], &Vec<String> and [String; 5]
 
@@ -184,7 +184,7 @@ The same design fault lives in JavaScript and PHP where the meaningless
 &Vec<String> is a reference of Vec<String>.
 
 
-<a id="orge88e9bb"></a>
+<a id="org519c5bc"></a>
 
 # Reasons to adopt Rust in our projects
 
@@ -231,7 +231,7 @@ The same design fault lives in JavaScript and PHP where the meaningless
 -   better FFI than Go
 
 
-<a id="org58160eb"></a>
+<a id="org990d802"></a>
 
 # Cons compared to Python
 
@@ -242,7 +242,7 @@ The same design fault lives in JavaScript and PHP where the meaningless
 -   a little less coding speed
 
 
-<a id="org9314333"></a>
+<a id="org729e754"></a>
 
 # Cons compared to Swift
 
@@ -250,21 +250,21 @@ The same design fault lives in JavaScript and PHP where the meaningless
 -   syntax being more elaborate
 
 
-<a id="orga02b5c6"></a>
+<a id="orgc607861"></a>
 
 # Cons compared to C++
 
 -   less mature in the ecosystem
 
 
-<a id="org8542154"></a>
+<a id="org0a5a90e"></a>
 
 # Cons compared to Java 8
 
 -   less mature in the ecosystem
 
 
-<a id="org60be6bb"></a>
+<a id="org0c3d78f"></a>
 
 # Cons compared to Go
 
@@ -272,7 +272,7 @@ The same design fault lives in JavaScript and PHP where the meaningless
 -   harder to learn
 
 
-<a id="org48b14bb"></a>
+<a id="org5280bc1"></a>
 
 # Cons compared to Common Lisp
 
@@ -280,12 +280,12 @@ The same design fault lives in JavaScript and PHP where the meaningless
 -   not "data as code" and "code as data"
 
 
-<a id="orgbefac5a"></a>
+<a id="org93861db"></a>
 
 # Compare with Oz
 
 
-<a id="org6f48ab0"></a>
+<a id="org8ec681c"></a>
 
 ## pros
 
@@ -294,7 +294,7 @@ The same design fault lives in JavaScript and PHP where the meaningless
 -   smaller memory footprint, e.g. functions don't capture context variables
 
 
-<a id="org6e1df3c"></a>
+<a id="orgabaf2bf"></a>
 
 ## cons
 
@@ -313,21 +313,21 @@ The same design fault lives in JavaScript and PHP where the meaningless
     captured values
 
 
-<a id="orgc016094"></a>
+<a id="org9f990e4"></a>
 
 # Compared with Swift
 
 <https://dev.to/rhymu8354/swift-vs-rust-an-overview-of-swift-from-a-rusty-perspective-18c7>
 
 
-<a id="org17b5b3f"></a>
+<a id="orgd862abc"></a>
 
 # It is a design error to use an empty tuple to denote the Void type
 
 I like the Oz's design: an operation does not return anything.
 
 
-<a id="orgd682dab"></a>
+<a id="orgaf57d8e"></a>
 
 # ANSI colors
 
@@ -342,12 +342,12 @@ I like the Oz's design: an operation does not return anything.
     const ANSI_RESET: &str = "\x1b[0m";
 
 
-<a id="org3ff6b09"></a>
+<a id="org786e3dc"></a>
 
-# idioms
+# Idioms
 
 
-<a id="orgae7ba7e"></a>
+<a id="orgce0270e"></a>
 
 ## open file and read to string
 
@@ -406,12 +406,12 @@ The following four versions are equivalent.
     }
 
 
-<a id="org81d68cd"></a>
+<a id="orgefee0d9"></a>
 
 ## return Ok(()) to indicate that the call is for its side effects only
 
 
-<a id="orgbeb5eaa"></a>
+<a id="org399a2d5"></a>
 
 ## how to specify the Fn trait bounds
 
@@ -420,12 +420,12 @@ with Fn and the compiler will tell you if you need FnMut or FnOnce based on
 what happens in the closure body.
 
 
-<a id="orgeb9ad3b"></a>
+<a id="orge11a24f"></a>
 
 # Cautions
 
 
-<a id="orgf9db1a3"></a>
+<a id="org548038a"></a>
 
 ## std::process::exit()
 
@@ -434,7 +434,7 @@ what happens in the closure body.
 [Is Rust Cleaning Up After Exit](https://users.rust-lang.org/t/is-rust-cleaning-up-after-exit/9613)
 
 
-<a id="org54a4813"></a>
+<a id="org9458028"></a>
 
 ## str::to\_lowercase is not 100% accurate
 
