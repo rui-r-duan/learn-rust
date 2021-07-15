@@ -170,7 +170,6 @@ To learn more, run the command again with --verbose.
   - harder to learn
 * Cons compared to Common Lisp
   - no REPL
-  - no meta programming control in the compile time and load time
   - not "data as code" and "code as data"
 * Compare with Oz
 ** pros
