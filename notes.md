@@ -1,90 +1,84 @@
 
 # Table of Contents
 
-1.  [rustup](#org634267f)
-2.  [cargo](#orgff42412)
-3.  [cargo test](#org136a9d9)
-4.  [rustc](#orgc228f73)
-5.  [THOUGHTS](#orgb50cd12)
-    1.  [Don't abuse variable shadowing.](#org13b222e)
-    2.  [Don't use the "return value" of an operation.](#orge6aa7f4)
-    3.  [A good example of the use of enum type (union type) to enfoce exception handling](#org937efdc)
-6.  [Print type of a variable](#org3aa1e37)
-7.  [&[String], &Vec<String> and [String; 5]](#orgd3df6be)
-8.  [Reasons to adopt Rust in our projects](#org665545c)
-9.  [Cons compared to Python](#org58c5f6b)
-10. [Cons compared to Swift](#orgd60a56a)
-11. [Cons compared to C++](#orgcb4fafd)
-12. [Cons compared to Java 8](#orge20f211)
-13. [Cons compared to Go](#orga2bb24f)
-14. [Cons compared to Common Lisp](#org4d0ae8a)
-15. [Compare with Oz](#org68d5822)
-    1.  [pros](#org6fe0572)
-    2.  [cons](#org60b63ad)
-16. [Compared with Swift](#orga6e1491)
-17. [It is a design error to use an empty tuple to denote the Void type](#org420be47)
-18. [ANSI colors](#orgf0f5fcf)
-19. [idioms](#orgeb5f7c4)
-    1.  [open file and read to string](#org823fa10)
-    2.  [return Ok(()) to indicate that the call is for its side effects only](#orga9d5bd8)
-    3.  [how to specify the Fn trait bounds](#org444cfb5)
-20. [Cautions](#org17082bd)
-    1.  [std::process::exit()](#org3a9565a)
-    2.  [str::to\_lowercase is not 100% accurate](#org754d69b)
+1.  [rustup](#org3cdac8f)
+2.  [cargo](#org338958f)
+3.  [cargo test](#org2b24378)
+4.  [rustc](#org85d337e)
+5.  [THOUGHTS](#orgd41b09b)
+    1.  [Don't abuse variable shadowing.](#org9ed05b3)
+    2.  [Don't use the "return value" of an operation.](#org7d860a7)
+    3.  [A good example of the use of enum type (union type) to enfoce exception handling](#orga98a0cf)
+6.  [Print type of a variable](#orgc59e253)
+7.  [&[String], &Vec<String> and [String; 5]](#org5e81567)
+8.  [Reasons to adopt Rust in our projects](#org03c3b7d)
+9.  [Cons compared to Python](#org7c1dc53)
+10. [Cons compared to Swift](#org8ecea3e)
+11. [Cons compared to C++](#orgfdb0ede)
+12. [Cons compared to Java 8](#orgf21b677)
+13. [Cons compared to Go](#org88c210c)
+14. [Cons compared to Common Lisp](#org62a812b)
+15. [Compare with Oz](#orgd31622a)
+    1.  [pros](#org8184eca)
+    2.  [cons](#org1214f28)
+16. [Compared with Swift](#org60ac028)
+17. [It is a design error to use an empty tuple to denote the Void type](#orgc81524b)
+18. [ANSI colors](#orgc02091c)
+19. [idioms](#org0eaf0ca)
+    1.  [open file and read to string](#orga7eb5e6)
+    2.  [return Ok(()) to indicate that the call is for its side effects only](#orgf619975)
+    3.  [how to specify the Fn trait bounds](#org20b8451)
+20. [Cautions](#orge51f76b)
+    1.  [std::process::exit()](#org9c7924d)
+    2.  [str::to\_lowercase is not 100% accurate](#org11ce662)
 
 
 
-<a id="org634267f"></a>
+<a id="org3cdac8f"></a>
 
 # rustup
 
-<p class="verse">
-rustup update<br />
-rustup doc &#x2013;book<br />
-</p>
+    rustup update
+    rustup doc --book
 
 
-<a id="orgff42412"></a>
+<a id="org338958f"></a>
 
 # cargo
 
-<p class="verse">
-cargo run<br />
-cargo run -p adder<br />
-RUST\_BACKTRACE=1 cargo run &#x2013;verbose<br />
-RUST\_BACKTRACE=full cargo run<br />
-<br />
-cargo build &#x2013;verbose<br />
-<br />
-cargo update<br />
-<br />
-cargo doc          # calls rustdoc<br />
-cargo doc &#x2013;open<br />
-<br />
-cargo login [token]<br />
-cargo publish<br />
-cargo yank &#x2013;vers 1.0.1<br />
-cargo yank &#x2013;vers 1.0.1 &#x2013;undo<br />
-<br />
-cargo install<br />
-<br />
-cargo &#x2013;list<br />
-</p>
+    cargo run
+    cargo run -p adder
+    RUST_BACKTRACE=1 cargo run --verbose
+    RUST_BACKTRACE=full cargo run
+    
+    cargo build --verbose
+    
+    cargo update
+    
+    cargo doc          # calls rustdoc
+    cargo doc --open
+    
+    cargo login [token]
+    cargo publish
+    cargo yank --vers 1.0.1
+    cargo yank --vers 1.0.1 --undo
+    
+    cargo install
+    
+    cargo --list
 
 
-<a id="org136a9d9"></a>
+<a id="org2b24378"></a>
 
 # cargo test
 
-<p class="verse">
-cargo test &#x2013; &#x2013;test-threads=1<br />
-cargo test &#x2013; &#x2013;show-output<br />
-cargo test <test\_function\_name><br />
-cargo test <sub\_string\_of\_test\_names\_including\_module\_names\_plus\_function\_names><br />
-cargo test &#x2013; &#x2013;ignored<br />
-cargo test &#x2013;test <integration\_test's crate\_name or function\_name><br />
-cargo test -p <crate in a workspace><br />
-</p>
+    cargo test -- --test-threads=1
+    cargo test -- --show-output
+    cargo test <test_function_name>
+    cargo test <sub_string_of_test_names_including_module_names_plus_function_names>
+    cargo test -- --ignored
+    cargo test --test <integration_test's crate_name or function_name>
+    cargo test -p <crate in a workspace>
 
 In the **<proj\_root>/tests/** directory, Cargo will compile each of the files as
 an individual crate.
@@ -99,21 +93,19 @@ Cargo won't be able to find the module definition, because there is no
 **<proj\_root>/tests/common.rs** as a guide.
 
 
-<a id="orgc228f73"></a>
+<a id="org85d337e"></a>
 
 # rustc
 
-<p class="verse">
-rustc &#x2013;explain E0308<br />
-</p>
+    rustc --explain E0308
 
 
-<a id="orgb50cd12"></a>
+<a id="orgd41b09b"></a>
 
 # THOUGHTS
 
 
-<a id="org13b222e"></a>
+<a id="org9ed05b3"></a>
 
 ## Don't abuse variable shadowing.
 
@@ -126,7 +118,7 @@ However, it makes people hard to find its definition.  Let's see if tools can
 help find the accurate definition in one go.
 
 
-<a id="orge6aa7f4"></a>
+<a id="org7d860a7"></a>
 
 ## Don't use the "return value" of an operation.
 
@@ -148,33 +140,31 @@ The same design fault lives in JavaScript and PHP where the meaningless
 "undefined" is spreaded over the whole program.
 
 
-<a id="org937efdc"></a>
+<a id="orga98a0cf"></a>
 
 ## A good example of the use of enum type (union type) to enfoce exception handling
 
-<p class="verse">
-&#xa0;&#xa0;&#xa0;Compiling guessing-game v0.1.0 (/Users/rduan/mygitlab/study-rust/guessing-game)<br />
-error[E0308]: mismatched types<br />
-&#xa0;&#xa0;&#x2013;> src/main.rs:20:22<br />
-&#xa0;&#xa0;&#xa0;|<br />
-20 |     let guess: u32 = guess.trim().parse();//.expect("Please type a number!");<br />
-&#xa0;&#xa0;&#xa0;|                &#x2014;   ^^^^^^^^^^^^^^^^^^^^ expected \`u32\`, found enum \`Result\`<br />
-&#xa0;&#xa0;&#xa0;|                |<br />
-&#xa0;&#xa0;&#xa0;|                expected due to this<br />
-&#xa0;&#xa0;&#xa0;|<br />
-&#xa0;&#xa0;&#xa0;= note: expected type \`u32\`<br />
-&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;found enum \`Result<\_, \_>\`<br />
-<br />
-error: aborting due to previous error<br />
-<br />
-For more information about this error, try \`rustc &#x2013;explain E0308\`.<br />
-error: could not compile \`guessing-game\`<br />
-<br />
-To learn more, run the command again with &#x2013;verbose.<br />
-</p>
+       Compiling guessing-game v0.1.0 (/Users/rduan/mygitlab/study-rust/guessing-game)
+    error[E0308]: mismatched types
+      --> src/main.rs:20:22
+       |
+    20 |     let guess: u32 = guess.trim().parse();//.expect("Please type a number!");
+       |                ---   ^^^^^^^^^^^^^^^^^^^^ expected `u32`, found enum `Result`
+       |                |
+       |                expected due to this
+       |
+       = note: expected type `u32`
+    	      found enum `Result<_, _>`
+    
+    error: aborting due to previous error
+    
+    For more information about this error, try `rustc --explain E0308`.
+    error: could not compile `guessing-game`
+    
+    To learn more, run the command again with --verbose.
 
 
-<a id="org3aa1e37"></a>
+<a id="orgc59e253"></a>
 
 # Print type of a variable
 
@@ -183,7 +173,7 @@ To learn more, run the command again with &#x2013;verbose.<br />
     }
 
 
-<a id="orgd3df6be"></a>
+<a id="org5e81567"></a>
 
 # &[String], &Vec<String> and [String; 5]
 
@@ -192,7 +182,7 @@ To learn more, run the command again with &#x2013;verbose.<br />
 &Vec<String> is a reference of Vec<String>.
 
 
-<a id="org665545c"></a>
+<a id="org03c3b7d"></a>
 
 # Reasons to adopt Rust in our projects
 
@@ -236,7 +226,7 @@ To learn more, run the command again with &#x2013;verbose.<br />
 -   better FFI than Go
 
 
-<a id="org58c5f6b"></a>
+<a id="org7c1dc53"></a>
 
 # Cons compared to Python
 
@@ -247,7 +237,7 @@ To learn more, run the command again with &#x2013;verbose.<br />
 -   a little less coding speed
 
 
-<a id="orgd60a56a"></a>
+<a id="org8ecea3e"></a>
 
 # Cons compared to Swift
 
@@ -255,21 +245,21 @@ To learn more, run the command again with &#x2013;verbose.<br />
 -   syntax being more elaborate
 
 
-<a id="orgcb4fafd"></a>
+<a id="orgfdb0ede"></a>
 
 # Cons compared to C++
 
 -   less mature in the ecosystem
 
 
-<a id="orge20f211"></a>
+<a id="orgf21b677"></a>
 
 # Cons compared to Java 8
 
 -   less mature in the ecosystem
 
 
-<a id="orga2bb24f"></a>
+<a id="org88c210c"></a>
 
 # Cons compared to Go
 
@@ -277,7 +267,7 @@ To learn more, run the command again with &#x2013;verbose.<br />
 -   harder to learn
 
 
-<a id="org4d0ae8a"></a>
+<a id="org62a812b"></a>
 
 # Cons compared to Common Lisp
 
@@ -286,12 +276,12 @@ To learn more, run the command again with &#x2013;verbose.<br />
 -   not "data as code" and "code as data"
 
 
-<a id="org68d5822"></a>
+<a id="orgd31622a"></a>
 
 # Compare with Oz
 
 
-<a id="org6fe0572"></a>
+<a id="org8184eca"></a>
 
 ## pros
 
@@ -300,7 +290,7 @@ To learn more, run the command again with &#x2013;verbose.<br />
 -   smaller memory footprint, e.g. functions don't capture context variables
 
 
-<a id="org60b63ad"></a>
+<a id="org1214f28"></a>
 
 ## cons
 
@@ -319,21 +309,21 @@ To learn more, run the command again with &#x2013;verbose.<br />
     captured values
 
 
-<a id="orga6e1491"></a>
+<a id="org60ac028"></a>
 
 # Compared with Swift
 
 <https://dev.to/rhymu8354/swift-vs-rust-an-overview-of-swift-from-a-rusty-perspective-18c7>
 
 
-<a id="org420be47"></a>
+<a id="orgc81524b"></a>
 
 # It is a design error to use an empty tuple to denote the Void type
 
 I like the Oz's design: an operation does not return anything.
 
 
-<a id="orgf0f5fcf"></a>
+<a id="orgc02091c"></a>
 
 # ANSI colors
 
@@ -348,12 +338,12 @@ I like the Oz's design: an operation does not return anything.
     const ANSI_RESET: &str = "\x1b[0m";
 
 
-<a id="orgeb5f7c4"></a>
+<a id="org0eaf0ca"></a>
 
 # idioms
 
 
-<a id="org823fa10"></a>
+<a id="orga7eb5e6"></a>
 
 ## open file and read to string
 
@@ -408,12 +398,12 @@ The following four versions are equivalent.
     }
 
 
-<a id="orga9d5bd8"></a>
+<a id="orgf619975"></a>
 
 ## return Ok(()) to indicate that the call is for its side effects only
 
 
-<a id="org444cfb5"></a>
+<a id="org20b8451"></a>
 
 ## how to specify the Fn trait bounds
 
@@ -422,12 +412,12 @@ with Fn and the compiler will tell you if you need FnMut or FnOnce based on
 what happens in the closure body.
 
 
-<a id="org17082bd"></a>
+<a id="orge51f76b"></a>
 
 # Cautions
 
 
-<a id="org3a9565a"></a>
+<a id="org9c7924d"></a>
 
 ## std::process::exit()
 
@@ -435,7 +425,7 @@ what happens in the closure body.
 [Is Rust Cleaning Up After Exit](https://users.rust-lang.org/t/is-rust-cleaning-up-after-exit/9613)
 
 
-<a id="org754d69b"></a>
+<a id="org11ce662"></a>
 
 ## str::to\_lowercase is not 100% accurate
 

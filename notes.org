@@ -1,12 +1,12 @@
 #+OPTIONS: ^:nil
 
 * rustup
-#+begin_verse
+#+begin_src shell
   rustup update
   rustup doc --book
-#+end_verse
+#+end_src
 * cargo
-#+begin_verse
+#+begin_src shell
   cargo run
   cargo run -p adder
   RUST_BACKTRACE=1 cargo run --verbose
@@ -27,9 +27,9 @@
   cargo install
 
   cargo --list
-#+end_verse
+#+end_src
 * cargo test
-#+begin_verse
+#+begin_src shell
   cargo test -- --test-threads=1
   cargo test -- --show-output
   cargo test <test_function_name>
@@ -37,7 +37,7 @@
   cargo test -- --ignored
   cargo test --test <integration_test's crate_name or function_name>
   cargo test -p <crate in a workspace>
-#+end_verse
+#+end_src
 
   In the *<proj_root>/tests/* directory, Cargo will compile each of the files as
   an individual crate.
@@ -51,9 +51,9 @@
   Cargo won't be able to find the module definition, because there is no
   *<proj_root>/tests/common.rs* as a guide.
 * rustc
-#+begin_verse
+#+begin_src shell
   rustc --explain E0308
-#+end_verse
+#+end_src
 * THOUGHTS
 ** Don't abuse variable shadowing.
 #+begin_quote
@@ -83,7 +83,7 @@
   The same design fault lives in JavaScript and PHP where the meaningless
   "undefined" is spreaded over the whole program.
 ** A good example of the use of enum type (union type) to enfoce exception handling
-#+begin_verse
+#+begin_src shell
    Compiling guessing-game v0.1.0 (/Users/rduan/mygitlab/study-rust/guessing-game)
 error[E0308]: mismatched types
   --> src/main.rs:20:22
@@ -102,7 +102,7 @@ For more information about this error, try `rustc --explain E0308`.
 error: could not compile `guessing-game`
 
 To learn more, run the command again with --verbose.
-#+end_verse
+#+end_src
 * Print type of a variable
 #+begin_src rust
   fn print_type_of<T>(_: &T) {
