@@ -176,6 +176,7 @@ To learn more, run the command again with --verbose.
 * Cons compared to Common Lisp
   - no REPL
   - not "data as code" and "code as data"
+  - no multiple dynamic dispatch
 * Compare with Oz
 ** pros
    - much better string type
@@ -212,7 +213,7 @@ https://dev.to/rhymu8354/swift-vs-rust-an-overview-of-swift-from-a-rusty-perspec
   const ANSI_RESET: &str = "\x1b[0m";
 #+end_src
 * Idioms
-** open file and read to string
+** Open file and read to string
 The following four versions are equivalent.
 
 #+begin_src rust
@@ -274,11 +275,62 @@ The following four versions are equivalent.
       }
   }
 #+end_src
-** return Ok(()) to indicate that the call is for its side effects only
-** how to specify the Fn trait bounds
+** Return Ok(()) to indicate that the call is for its side effects only
+** How to specify the Fn trait bounds
    Most of the time when specifying one of the Fn trait bounds, you can start
    with Fn and the compiler will tell you if you need FnMut or FnOnce based on
    what happens in the closure body.
+** Compile time polymorphism (static dispatch): bounded parametric polymorphism
+   *Generics* and *Trait bounds* is preferable for homogeneous collections,
+   because the definitions will be /monomorphized/ at compile time to use the
+   concret types.
+#+begin_src rust
+  pub struct Screen<T: Draw> {
+      // The vector can hold only one type of objects, such as Button or TextField.
+      pub components: Vec<T>,
+  }
+
+  impl<T> Screen<T>
+  where
+      T: Draw,
+  {
+      pub fn run(&self) {
+	  for component in self.components.iter() {
+	      component.draw();
+	  }
+      }
+  }
+#+end_src
+** Run time polymorphism (duck typing, dynamic dispatch): trait object
+   It is like a C++ object which binds behaviors with data.  In C++, the
+   dynamic behaviors are implemented by a virtual table in an object.  In a
+   Rust's trait object, such kind of virtual table is also embedded.
+#+begin_src rust
+  pub trait Draw {
+      fn draw(&self);
+  }
+
+  pub struct Screen {
+      // The vector can hold any objects that implements the `Draw` trait,
+      // such as Box<Button> and Box<TextField>.
+      pub components: Vec<Box<dyn Draw>>,
+  }
+#+end_src
+*** Pros compared to duck typing in dynamically typed languages
+#+begin_quote
+The advantage of using trait objects and Rust’s type system to write code
+similar to code using duck typing is that we never have to check whether a
+value implements a particular method at runtime or worry about getting errors
+if a value doesn’t implement a method but we call it anyway. Rust won’t compile
+our code if the values don’t implement the traits that the trait objects need.
+#+end_quote
+*** Pros compared to closures as objects
+    A closure can binds data and behaviors together, thus it can be used as an
+    `object`.  However, it is not easy to tell what type of object it is, for
+    example, whether it implements `draw()` method or not.
+
+    Duck typing in dynamically typed languages is implemented in a similar way
+    as closures.
 * Cautions
 ** std::process::exit()
    https://doc.rust-lang.org/std/process/fn.exit.html
