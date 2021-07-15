@@ -58,6 +58,30 @@ fn main() {
         data: String::from("other stuff"),
     };
     println!("CustomSmartPointer for other stuff is created.");
+
+    //----------------------------------------------------------------
+    // Weak Reference and Strong Reference
+    //----------------------------------------------------------------
+    use std::rc::Rc;
+
+    let five = Rc::new(5);
+
+    let weak_five = Rc::downgrade(&five);
+
+    let strong_five: Option<Rc<_>> = weak_five.upgrade();
+    assert!(strong_five.is_some());
+
+    assert_eq!(Rc::strong_count(&five), 2);
+    if let Some(sf) = &strong_five {
+        assert_eq!(Rc::strong_count(&sf), 2);
+    }
+
+    // Destroy all strong pointers.
+    drop(strong_five);
+    assert_eq!(Rc::strong_count(&five), 1);
+    drop(five);
+
+    assert!(weak_five.upgrade().is_none());
 }
 
 fn hello(name: &str) {
