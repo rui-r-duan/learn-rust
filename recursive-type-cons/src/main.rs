@@ -16,9 +16,25 @@ enum RcCellList {
     Nil,
 }
 
+#[derive(Debug)]
+enum RefCellList {
+    Cons(i32, RefCell<Rc<RefCellList>>),
+    Nil,
+}
+
+impl RefCellList {
+    fn tail(&self) -> Option<&RefCell<Rc<RefCellList>>> {
+        match self {
+            RefCellCons(_, item) => Some(item),
+            RefCellNil => None,
+        }
+    }
+}
+
 use crate::List::{Cons, Nil};
 use RcList::{Cons as RcCons, Nil as RcNil};
 use RcCellList::{Cons as RcCellCons, Nil as RcCellNil};
+use RefCellList::{Cons as RefCellCons, Nil as RefCellNil};
 use std::rc::Rc;
 use std::cell::RefCell;
 
@@ -26,11 +42,11 @@ fn main() {
     // List
     let list = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
 
-    println!("-------- Cons list using Box<T> --------");
+    println!("-------- Cons(i32, Box<List>) --------");
     println!("list = {:?}", list);
 
     // RcList
-    println!("-------- Cons list using Rc<T> --------");
+    println!("-------- Cons(i32, Rc<List>) --------");
     let a = Rc::new(RcCons(5, Rc::new(RcCons(10, Rc::new(RcNil)))));
     println!("count after creating a = {}", Rc::strong_count(&a));
     let b = RcCons(3, Rc::clone(&a));
@@ -48,7 +64,7 @@ fn main() {
     // RcCellList
     // Among the above three versions of cons, RcCellList is the closest to
     // Lisp cons cells.
-    println!("-------- Cons list using Rc<T> and RefCell<T> --------");
+    println!("-------- Cons(Rc<Refcell<i32>, Rc<RcCellList>) --------");
     let value = Rc::new(RefCell::new(5));
 
     let aa = Rc::new(RcCellCons(Rc::clone(&value), Rc::new(RcCellNil)));
@@ -87,4 +103,28 @@ fn main() {
     // (3 15)
     // CL-USER> *c*
     // (4 15)
+
+    // RefCellList
+    println!("-------- Cons(i32, RefCell<Rc<List>>) --------");
+    let a = Rc::new(RefCellCons(5, RefCell::new(Rc::new(RefCellNil))));
+
+    println!("a initial rc count = {}", Rc::strong_count(&a));
+    println!("a next item = {:?}", a.tail());
+
+    let b = Rc::new(RefCellCons(10, RefCell::new(Rc::clone(&a))));
+
+    println!("a rc count after b creation = {}", Rc::strong_count(&a));
+    println!("b initial rc count = {}", Rc::strong_count(&b));
+    println!("b next item = {:?}", b.tail());
+
+    if let Some(link) = a.tail() {
+        *link.borrow_mut() = Rc::clone(&b);
+    }
+
+    println!("b rc count after changing a = {}", Rc::strong_count(&b));
+    println!("a rc count after changing a = {}", Rc::strong_count(&a));
+
+    // Uncomment the next line to see that we have a cycle;
+    // it will overflow the stack
+    // println!("a next item = {:?}", a.tail());
 }
