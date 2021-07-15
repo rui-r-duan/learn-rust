@@ -76,6 +76,8 @@ fn main() {
     println!("bb before = {:?}", bb);
     println!("cc before = {:?}", cc);
 
+    // if the "car" part of "cons" were not an Rc<T>, Rust will not allow
+    // `value` to borrow the ref below after its ownership is moved into `aa`.
     *value.borrow_mut() += 10;
 
     println!("aa after = {:?}", aa);
