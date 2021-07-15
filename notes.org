@@ -276,6 +276,7 @@ The following four versions are equivalent.
   }
 #+end_src
 ** Return Ok(()) to indicate that the call is for its side effects only
+** Return `Result<(), Box<dyn Error>>` for general run() method
 ** How to specify the Fn trait bounds
    Most of the time when specifying one of the Fn trait bounds, you can start
    with Fn and the compiler will tell you if you need FnMut or FnOnce based on
@@ -331,6 +332,20 @@ our code if the values don’t implement the traits that the trait objects need.
 
     Duck typing in dynamically typed languages is implemented in a similar way
     as closures.
+** Use enum to let Vec<T> hold limited different types
+#+begin_src rust
+  enum SpreadsheetCell {
+      Int(i32),
+      Float(f64),
+      Text(String),
+  }
+
+  let row = vec![
+      SpreadsheetCell::Int(3),
+      SpreadsheetCell::Text(String::from("blue")),
+      SpreadsheetCell::Float(10.12),
+  ];
+#+end_src
 * Cautions
 ** std::process::exit()
    https://doc.rust-lang.org/std/process/fn.exit.html
