@@ -113,3 +113,4 @@ impl State for Published {
 }
 
 pub mod enumpost;
+pub mod staticstate;
