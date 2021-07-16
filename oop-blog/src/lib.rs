@@ -27,6 +27,14 @@ impl Post {
     }
 
     pub fn request_review(&mut self) {
+        // If we did not use `Option<>` as `state` value, what is going to happen to
+        // ``` self.state = self.state.request_review() ```?
+        //
+        // error[E0507]: cannot move out of `self.state` which is behind a mutable reference
+        //    --> src/lib.rs:30:22
+        //     |
+        //  30 |         self.state = self.state.request_review();
+        //     |                      ^^^^^^^^^^ move occurs because `self.state` has type `Box<dyn State>`, which does not implement the `Copy` trait
         if let Some(s) = self.state.take() {
             self.state = Some(s.request_review())
         }
