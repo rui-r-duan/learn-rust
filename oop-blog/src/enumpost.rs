@@ -7,6 +7,7 @@ enum PostState {
 pub struct Post {
     state: PostState,
     content: String,
+    approvals: u32,
 }
 
 impl Post {
@@ -14,6 +15,7 @@ impl Post {
         Post {
             state: PostState::Draft,
             content: String::new(),
+            approvals: 0,
         }
     }
 
@@ -40,9 +42,17 @@ impl Post {
     }
 
     pub fn approve(&mut self) {
+        self.approvals += 1;
+        if self.approvals < 2 {
+            println!("You got {} approval.", self.approvals);
+        } else {
+            println!("You got {} approvals. Your post is published!", self.approvals);
+        }
         match self.state {
             PostState::PendingReview => {
-                self.state = PostState::Published;
+                if self.approvals == 2 {
+                    self.state = PostState::Published;
+                }
             }
             _ => (),
         }
