@@ -77,10 +77,11 @@ fn main() {
 
     // If we call `approve()` directly after `reject()`, it won't compile!
     // It means that the static type system can enforce the state change rules!
-    let post = post.request_review();
+    let mut post = post.request_review();
 
-    let post = post.approve();
-    let post = post.approve();
+    post.approve();
+    // post.publish(); Compile error forbids us to mistakenly call publish() here.
+    post.approve();
 
     // CAUTIOUS: it is not easy for the static typing solution to use `approve()`
     // to return two types of state, so we are forced to add another user API
