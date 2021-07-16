@@ -1,6 +1,5 @@
 pub struct Post {
     // Rust doesn't let us have unpopulated fields in structs.
-    // Can we use a mut variable in structs?
     state: Option<Box<dyn State>>, // a pointer to a NULL-able object
     content: String,
 }
