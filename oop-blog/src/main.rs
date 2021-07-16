@@ -14,6 +14,13 @@ fn main() {
     post.request_review();
     assert_eq!("", post.content());
 
+    post.reject();
+    assert_eq!("", post.content());
+
+    // After being rejected, if we do not call `request_review()`,
+    // `approve()` will panic!
+    post.request_review();
+
     post.approve();
     assert_eq!("I ate a salad for lunch today", post.content());
 
@@ -28,9 +35,16 @@ fn main() {
     post.request_review();
     assert_eq!("", post.content());
 
+    post.reject();
+    assert_eq!("", post.content());
+
+    // After being rejected, if we do not call `request_review()`,
+    // `approve()` will panic!
+    post.request_review();
+
     post.approve();
     assert_eq!("I ate a salad for lunch today", post.content());
-    
+
     //----------------------------------------------------------------
     // Static Typing State
     //----------------------------------------------------------------
@@ -38,6 +52,12 @@ fn main() {
 
     post.add_text("I ate a salad for lunch today");
 
+    let post = post.request_review();
+
+    let post = post.reject();
+
+    // If we call `approve()` directly after `reject()`, it won't compile!
+    // It means that the static type system can enforce the state change rules!
     let post = post.request_review();
 
     let post = post.approve();

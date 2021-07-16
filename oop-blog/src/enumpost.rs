@@ -33,6 +33,8 @@ impl Post {
             PostState::Draft => {
                 self.state = PostState::PendingReview;
             }
+            // CAUTIOUS: if we add a new state, we must check all the `_` arms
+            // to make sure they are still correct.
             _ => (),
         }
     }
@@ -41,6 +43,15 @@ impl Post {
         match self.state {
             PostState::PendingReview => {
                 self.state = PostState::Published;
+            }
+            _ => (),
+        }
+    }
+
+    pub fn reject(&mut self) {
+        match self.state {
+            PostState::PendingReview => {
+                self.state = PostState::Draft;
             }
             _ => (),
         }
