@@ -80,13 +80,15 @@ fn main() {
     let mut post = post.request_review();
 
     post.approve();
-    // post.publish(); Compile error forbids us to mistakenly call publish() here.
+    // let post = post.publish(); // Compile error forbids us to mistakenly call publish() here.
     post.approve();
 
     // CAUTIOUS: it is not easy for the static typing solution to use `approve()`
     // to return two types of state, so we are forced to add another user API
     // `publish`.
-    let post = post.publish();
+    if post.allow_publish() {
+        let post = post.publish();
 
-    assert_eq!("I ate a salad for lunch today.", post.content());
+        assert_eq!("I ate a salad for lunch today.", post.content());
+    }
 }
