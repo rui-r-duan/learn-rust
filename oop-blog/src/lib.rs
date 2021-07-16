@@ -19,10 +19,23 @@ impl Post {
     }
 
     pub fn content(&self) -> &str {
+        // as_ref() converts from &Option<T> to Option<&T>.
+        //
         // as_ref() returns an `Option<&Box<dyn State>>`.  Then deref coercion
         // will take effect on the `&` and the `Box` so the `content` method
         // will ultimately be called on the type that implements the `State`
         // trait.
+        //
+        // What happens without calling `as_ref()`?
+        //
+        // error[E0507]: cannot move out of `self.state` which is behind a shared reference
+        //   --> src/lib.rs:26:9
+        //    |
+        // 26 |         self.state.unwrap().content(self)
+        //    |         ^^^^^^^^^^
+        //    |         |
+        //    |         move occurs because `self.state` has type `Option<Box<dyn State>>`, which does not implement the `Copy` trait
+        //    |         help: consider borrowing the `Option`'s content: `self.state.as_ref()`
         self.state.as_ref().unwrap().content(self)
     }
 
