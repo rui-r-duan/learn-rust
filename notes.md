@@ -1,47 +1,47 @@
 
 # Table of Contents
 
-1.  [rustup](#org04b8cb0)
-2.  [cargo](#org61d5492)
-3.  [cargo test](#orgdf9f8a3)
-4.  [rustc](#org3147ce4)
-5.  [THOUGHTS](#org71bc6ac)
-    1.  [Don't abuse variable shadowing.](#orgcaa685c)
-    2.  [Don't use the "return value" of an operation.](#orgc958356)
-    3.  [A good example of the use of enum type (union type) to enfoce exception handling](#org4f13b62)
-6.  [Print type of a variable](#org05a762e)
-7.  [&[String], &Vec<String> and [String; 5]](#orgfb61527)
-8.  [Reasons to adopt Rust in our projects](#org549c91f)
-9.  [Cons compared to Python](#org6f75548)
-10. [Cons compared to Swift](#org15e66b3)
-11. [Cons compared to C++](#org9ccc750)
-12. [Cons compared to Java 8](#orgae2c115)
-13. [Cons compared to Go](#org4afba85)
-14. [Cons compared to Common Lisp](#orgc167736)
-15. [Compare with Oz](#orgab1d351)
-    1.  [pros](#org3b0aa3f)
-    2.  [cons](#org3e9b008)
-16. [Compared with Swift](#org6c8074c)
-17. [It is a design error to use an empty tuple to denote the Void type](#org0089df6)
-18. [ANSI colors](#org1546a7b)
-19. [Idioms](#org2254e5b)
-    1.  [Open file and read to string](#org4364294)
-    2.  [Return Ok(()) to indicate that the call is for its side effects only](#org14a49d1)
-    3.  [Return \`Result<(), Box<dyn Error>>\` for general run() method](#orgf96e6f3)
-    4.  [How to specify the Fn trait bounds](#orgafae8b5)
-    5.  [Compile time polymorphism (static dispatch): bounded parametric polymorphism](#org96fb9f1)
-    6.  [Run time polymorphism (duck typing, dynamic dispatch): trait object](#org15a548f)
-        1.  [Pros compared to duck typing in dynamically typed languages](#org42af238)
-        2.  [Pros compared to closures as objects](#orgc890968)
-    7.  [Use enum to let Vec<T> hold limited different types](#org7a1c3d1)
-    8.  [Option<T>](#org7cde857)
-20. [Cautions](#orga90aa4e)
-    1.  [std::process::exit()](#orgbbdd833)
-    2.  [str::to\_lowercase is not 100% accurate](#org306d0b5)
+1.  [rustup](#org5376dc9)
+2.  [cargo](#orgc1bfb63)
+3.  [cargo test](#orgd75c885)
+4.  [rustc](#org2f8d433)
+5.  [THOUGHTS](#orge991ca1)
+    1.  [Don't abuse variable shadowing.](#orge76d15e)
+    2.  [Don't use the "return value" of an operation.](#orga3f7999)
+    3.  [A good example of the use of enum type (union type) to enfoce exception handling](#org164d944)
+6.  [Print type of a variable](#orgcf4bd46)
+7.  [&[String], &Vec<String> and [String; 5]](#orgdf10216)
+8.  [Reasons to adopt Rust in our projects](#org03b68a1)
+9.  [Cons compared to Python](#orge7f9454)
+10. [Cons compared to Swift](#org991468d)
+11. [Cons compared to C++](#orged43206)
+12. [Cons compared to Java 8](#orgefb22cf)
+13. [Cons compared to Go](#org9bcd8dd)
+14. [Cons compared to Common Lisp](#org34b618a)
+15. [Compare with Oz](#org49f8f0a)
+    1.  [pros](#org8ac69c3)
+    2.  [cons](#org06b65ee)
+16. [Compared with Swift](#org30dfbf2)
+17. [It is a design error to use an empty tuple to denote the Void type](#org3e956bb)
+18. [ANSI colors](#org4c97601)
+19. [Idioms](#org08bca3e)
+    1.  [Open file and read to string](#orgfcc0031)
+    2.  [Return Ok(()) to indicate that the call is for its side effects only](#org54f1767)
+    3.  [Return \`Result<(), Box<dyn Error>>\` for general run() method](#orga770c45)
+    4.  [How to specify the Fn trait bounds](#orgbe9344e)
+    5.  [Compile time polymorphism (static dispatch): bounded parametric polymorphism](#org7bb0258)
+    6.  [Run time polymorphism (duck typing, dynamic dispatch): trait object](#org37cc1e5)
+        1.  [Pros compared to duck typing in dynamically typed languages](#org0b6d7f7)
+        2.  [Pros compared to closures as objects](#orgb7aa2be)
+    7.  [Use enum to let Vec<T> hold limited different types](#org7f66c17)
+    8.  [Option<T>](#org3d4f865)
+20. [Cautions](#orgfed628c)
+    1.  [std::process::exit()](#org31cd18a)
+    2.  [str::to\_lowercase is not 100% accurate](#org3d832fe)
 
 
 
-<a id="org04b8cb0"></a>
+<a id="org5376dc9"></a>
 
 # rustup
 
@@ -49,7 +49,7 @@
     rustup doc --book
 
 
-<a id="org61d5492"></a>
+<a id="orgc1bfb63"></a>
 
 # cargo
 
@@ -75,7 +75,7 @@
     cargo --list
 
 
-<a id="orgdf9f8a3"></a>
+<a id="orgd75c885"></a>
 
 # cargo test
 
@@ -100,19 +100,19 @@ Cargo won't be able to find the module definition, because there is no
 **<proj\_root>/tests/common.rs** as a guide.
 
 
-<a id="org3147ce4"></a>
+<a id="org2f8d433"></a>
 
 # rustc
 
     rustc --explain E0308
 
 
-<a id="org71bc6ac"></a>
+<a id="orge991ca1"></a>
 
 # THOUGHTS
 
 
-<a id="orgcaa685c"></a>
+<a id="orge76d15e"></a>
 
 ## Don't abuse variable shadowing.
 
@@ -125,7 +125,7 @@ However, it makes people hard to find its definition.  Let's see if tools can
 help find the accurate definition in one go.
 
 
-<a id="orgc958356"></a>
+<a id="orga3f7999"></a>
 
 ## Don't use the "return value" of an operation.
 
@@ -147,7 +147,7 @@ The same design fault lives in JavaScript and PHP where the meaningless
 "undefined" is spreaded over the whole program.
 
 
-<a id="org4f13b62"></a>
+<a id="org164d944"></a>
 
 ## A good example of the use of enum type (union type) to enfoce exception handling
 
@@ -171,7 +171,7 @@ The same design fault lives in JavaScript and PHP where the meaningless
     To learn more, run the command again with --verbose.
 
 
-<a id="org05a762e"></a>
+<a id="orgcf4bd46"></a>
 
 # Print type of a variable
 
@@ -180,7 +180,7 @@ The same design fault lives in JavaScript and PHP where the meaningless
     }
 
 
-<a id="orgfb61527"></a>
+<a id="orgdf10216"></a>
 
 # &[String], &Vec<String> and [String; 5]
 
@@ -191,7 +191,7 @@ The same design fault lives in JavaScript and PHP where the meaningless
 &Vec<String> is a reference of Vec<String>.
 
 
-<a id="org549c91f"></a>
+<a id="org03b68a1"></a>
 
 # Reasons to adopt Rust in our projects
 
@@ -234,11 +234,11 @@ The same design fault lives in JavaScript and PHP where the meaningless
 -   good community
     -   strong language developers
     -   friendly and supportive
-    -   backing by large companies (Mozilla, Microsoft, Amazon, Google, etc.)
+    -   backing from large companies (Mozilla, Microsoft, Amazon, Google, etc.)
 -   better FFI than Go
 
 
-<a id="org6f75548"></a>
+<a id="orge7f9454"></a>
 
 # Cons compared to Python
 
@@ -249,7 +249,7 @@ The same design fault lives in JavaScript and PHP where the meaningless
 -   a little less coding speed
 
 
-<a id="org15e66b3"></a>
+<a id="org991468d"></a>
 
 # Cons compared to Swift
 
@@ -257,21 +257,21 @@ The same design fault lives in JavaScript and PHP where the meaningless
 -   syntax being more elaborate
 
 
-<a id="org9ccc750"></a>
+<a id="orged43206"></a>
 
 # Cons compared to C++
 
 -   less mature in the ecosystem
 
 
-<a id="orgae2c115"></a>
+<a id="orgefb22cf"></a>
 
 # Cons compared to Java 8
 
 -   less mature in the ecosystem
 
 
-<a id="org4afba85"></a>
+<a id="org9bcd8dd"></a>
 
 # Cons compared to Go
 
@@ -279,7 +279,7 @@ The same design fault lives in JavaScript and PHP where the meaningless
 -   harder to learn
 
 
-<a id="orgc167736"></a>
+<a id="org34b618a"></a>
 
 # Cons compared to Common Lisp
 
@@ -288,12 +288,12 @@ The same design fault lives in JavaScript and PHP where the meaningless
 -   no multiple dynamic dispatch
 
 
-<a id="orgab1d351"></a>
+<a id="org49f8f0a"></a>
 
 # Compare with Oz
 
 
-<a id="org3b0aa3f"></a>
+<a id="org8ac69c3"></a>
 
 ## pros
 
@@ -302,7 +302,7 @@ The same design fault lives in JavaScript and PHP where the meaningless
 -   smaller memory footprint, e.g. functions don't capture context variables
 
 
-<a id="org3e9b008"></a>
+<a id="org06b65ee"></a>
 
 ## cons
 
@@ -323,21 +323,21 @@ The same design fault lives in JavaScript and PHP where the meaningless
     captured values
 
 
-<a id="org6c8074c"></a>
+<a id="org30dfbf2"></a>
 
 # Compared with Swift
 
 <https://dev.to/rhymu8354/swift-vs-rust-an-overview-of-swift-from-a-rusty-perspective-18c7>
 
 
-<a id="org0089df6"></a>
+<a id="org3e956bb"></a>
 
 # It is a design error to use an empty tuple to denote the Void type
 
 I like the Oz's design: an operation does not return anything.
 
 
-<a id="org1546a7b"></a>
+<a id="org4c97601"></a>
 
 # ANSI colors
 
@@ -352,12 +352,12 @@ I like the Oz's design: an operation does not return anything.
     const ANSI_RESET: &str = "\x1b[0m";
 
 
-<a id="org2254e5b"></a>
+<a id="org08bca3e"></a>
 
 # Idioms
 
 
-<a id="org4364294"></a>
+<a id="orgfcc0031"></a>
 
 ## Open file and read to string
 
@@ -416,17 +416,17 @@ The following four versions are equivalent.
     }
 
 
-<a id="org14a49d1"></a>
+<a id="org54f1767"></a>
 
 ## Return Ok(()) to indicate that the call is for its side effects only
 
 
-<a id="orgf96e6f3"></a>
+<a id="orga770c45"></a>
 
 ## Return \`Result<(), Box<dyn Error>>\` for general run() method
 
 
-<a id="orgafae8b5"></a>
+<a id="orgbe9344e"></a>
 
 ## How to specify the Fn trait bounds
 
@@ -435,7 +435,7 @@ with Fn and the compiler will tell you if you need FnMut or FnOnce based on
 what happens in the closure body.
 
 
-<a id="org96fb9f1"></a>
+<a id="org7bb0258"></a>
 
 ## Compile time polymorphism (static dispatch): bounded parametric polymorphism
 
@@ -460,7 +460,7 @@ concret types.
     }
 
 
-<a id="org15a548f"></a>
+<a id="org37cc1e5"></a>
 
 ## Run time polymorphism (duck typing, dynamic dispatch): trait object
 
@@ -479,7 +479,7 @@ Rust's trait object, such kind of virtual table is also embedded.
     }
 
 
-<a id="org42af238"></a>
+<a id="org0b6d7f7"></a>
 
 ### Pros compared to duck typing in dynamically typed languages
 
@@ -490,7 +490,7 @@ Rust's trait object, such kind of virtual table is also embedded.
 > our code if the values don’t implement the traits that the trait objects need.
 
 
-<a id="orgc890968"></a>
+<a id="orgb7aa2be"></a>
 
 ### Pros compared to closures as objects
 
@@ -502,7 +502,7 @@ Duck typing in dynamically typed languages is implemented in a similar way
 as closures.
 
 
-<a id="org7a1c3d1"></a>
+<a id="org7f66c17"></a>
 
 ## Use enum to let Vec<T> hold limited different types
 
@@ -519,7 +519,7 @@ as closures.
     ];
 
 
-<a id="org7cde857"></a>
+<a id="org3d4f865"></a>
 
 ## Option<T>
 
@@ -531,12 +531,12 @@ as closures.
     option.unwrap()
 
 
-<a id="orga90aa4e"></a>
+<a id="orgfed628c"></a>
 
 # Cautions
 
 
-<a id="orgbbdd833"></a>
+<a id="org31cd18a"></a>
 
 ## std::process::exit()
 
@@ -545,7 +545,7 @@ as closures.
 [Is Rust Cleaning Up After Exit](https://users.rust-lang.org/t/is-rust-cleaning-up-after-exit/9613)
 
 
-<a id="org306d0b5"></a>
+<a id="org3d832fe"></a>
 
 ## str::to\_lowercase is not 100% accurate
 

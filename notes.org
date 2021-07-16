@@ -155,7 +155,7 @@ To learn more, run the command again with --verbose.
   - good community
     - strong language developers
     - friendly and supportive
-    - backing by large companies (Mozilla, Microsoft, Amazon, Google, etc.)
+    - backing from large companies (Mozilla, Microsoft, Amazon, Google, etc.)
   - better FFI than Go
 * Cons compared to Python
   - no REPL
