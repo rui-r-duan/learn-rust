@@ -18,6 +18,12 @@ fn main() {
 
     println!(
         "The area of the rectangle is {} square pixels.",
-        area(rect1)
+        rect1.area()
     );
+
+    let mut rect2 = rect1;
+
+    rect2.width = 100;
+
+    println!("rect is {:?}", rect2);
 }
