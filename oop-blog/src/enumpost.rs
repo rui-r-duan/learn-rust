@@ -20,7 +20,14 @@ impl Post {
     }
 
     pub fn add_text(&mut self, text: &str) {
-        self.content.push_str(text);
+        match self.state {
+            PostState::Draft => {
+                self.content.push_str(text);
+            }
+            _ => {
+                println!("Adding state is only allowed in Draft state.");
+            }
+        }
     }
 
     pub fn content(&self) -> &str {

@@ -9,10 +9,13 @@ fn main() {
     println!("-------- Dynamic Typing State --------");
     let mut post = Post::new();
 
-    post.add_text("I ate a salad for lunch today");
+    post.add_text("I ate a salad for lunch today.");
     assert_eq!("", post.content());
 
     post.request_review();
+    assert_eq!("", post.content());
+
+    post.add_text(" This is a nice day.");
     assert_eq!("", post.content());
 
     post.reject();
@@ -26,7 +29,7 @@ fn main() {
     assert_eq!("", post.content());
 
     post.approve();
-    assert_eq!("I ate a salad for lunch today", post.content());
+    assert_eq!("I ate a salad for lunch today.", post.content());
 
     //----------------------------------------------------------------
     // Enum State
@@ -34,10 +37,13 @@ fn main() {
     println!("-------- Enum State --------");
     let mut post = EnumPost::new();
 
-    post.add_text("I ate a salad for lunch today");
+    post.add_text("I ate a salad for lunch today.");
     assert_eq!("", post.content());
 
     post.request_review();
+    assert_eq!("", post.content());
+
+    post.add_text(" This is a nice day.");
     assert_eq!("", post.content());
 
     post.reject();
@@ -51,7 +57,7 @@ fn main() {
     assert_eq!("", post.content());
 
     post.approve();
-    assert_eq!("I ate a salad for lunch today", post.content());
+    assert_eq!("I ate a salad for lunch today.", post.content());
 
     //----------------------------------------------------------------
     // Static Typing State
@@ -59,9 +65,13 @@ fn main() {
     println!("-------- Static Typing State --------");
     let mut post = StaticTypePost::new();
 
-    post.add_text("I ate a salad for lunch today");
+    post.add_text("I ate a salad for lunch today.");
 
     let post = post.request_review();
+
+    // Won't compile!  Because method not found in `PendingReviewPost`.
+    // Only `Draft` state has `add_text`.  It has met our new requirement.
+    // post.add_text("I ate a salad for lunch today.");
 
     let post = post.reject();
 
@@ -77,5 +87,5 @@ fn main() {
     // `publish`.
     let post = post.publish();
 
-    assert_eq!("I ate a salad for lunch today", post.content());
+    assert_eq!("I ate a salad for lunch today.", post.content());
 }
