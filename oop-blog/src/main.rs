@@ -1,4 +1,5 @@
-use oop_blog::Post;
+// use oop_blog::Post;
+use oop_blog::enumpost::Post;
 
 fn main() {
     let mut post = Post::new();
