@@ -185,6 +185,8 @@ To learn more, run the command again with --verbose.
 ** cons
    - no tail call optimization which leads to a crippled support for recursion,
      which leads to less descriptive programming paradigm.
+   - tedious to express recursive types (structures), such as linked list,
+     trees, and graphs, unless using raw pointers.  This is due to lack of GC.
    - no difference list
    - conceptually more complicated types for pattern matching.  In Oz, Record
      type suffices.
