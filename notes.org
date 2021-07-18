@@ -175,8 +175,7 @@ To learn more, run the command again with --verbose.
   - harder to learn
 * Cons compared to Common Lisp
   - no REPL
-  - not "data as code" and "code as data"
-  - no multiple dynamic dispatch
+  - harder to use macros, so harder to implement "data as code" and "code as data"
 * Compare with Oz
 ** pros
    - much better string type
