@@ -195,8 +195,8 @@ To learn more, run the command again with --verbose.
      - operations return an empty tuple
      - placing a semicolon turns an expression to a statement
    - functions are not closures, so the functional programming is limited
-   - due to lack of GC, closures are complicated: it either borrows or moves
-     captured values
+   - due to ownership rules and lack of GC, closures are complicated: it either
+     borrows or moves captured values
 * Compared with Swift
 https://dev.to/rhymu8354/swift-vs-rust-an-overview-of-swift-from-a-rusty-perspective-18c7
 * It is a design error to use an empty tuple to denote the Void type
