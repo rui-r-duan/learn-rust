@@ -2,10 +2,10 @@ use std::io::prelude::*;
 use std::net::TcpListener;
 use std::net::TcpStream;
 // use std::mem;
+use mini_web_server::ThreadPool;
 use std::fs;
 use std::thread;
 use std::time::Duration;
-use mini_web_server::ThreadPool;
 
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
