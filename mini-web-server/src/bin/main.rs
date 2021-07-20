@@ -1,7 +1,7 @@
 use std::io::prelude::*;
 use std::net::TcpListener;
 use std::net::TcpStream;
-use std::mem;
+// use std::mem;
 use std::fs;
 use std::thread;
 use std::time::Duration;
@@ -15,20 +15,22 @@ fn main() {
         let stream = stream.unwrap();
 
         pool.execute(|| {
-            println!("Connection established!");
+            // println!("Connection established!");
             handle_connection(stream);
         });
     }
+
+    println!("Shutting down.");
 }
 
 fn handle_connection(mut stream: TcpStream) {
     let mut buffer = [0; 1024];
 
-    println!("array occupies {} bytes", mem::size_of_val(&buffer));
+    // println!("array occupies {} bytes", mem::size_of_val(&buffer));
 
     stream.read(&mut buffer).unwrap();
 
-    println!("Request: {}", String::from_utf8_lossy(&buffer[..]));
+    // println!("Request: {}", String::from_utf8_lossy(&buffer[..]));
 
     // let response = "HTTP/1.1 200 OK\r\n\r\n";
 
