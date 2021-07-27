@@ -14,6 +14,10 @@ async fn manual_hello() -> impl Responder {
     HttpResponse::Ok().body("Hey there!")
 }
 
+async fn index() -> impl Responder {
+    "Hello world!"
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
@@ -21,6 +25,12 @@ async fn main() -> std::io::Result<()> {
             .service(hello)
             .service(echo)
             .route("/hey", web::get().to(manual_hello))
+            .service(
+                // prefixes all resources and routes attached to it...
+                web::scope("/app")
+                    // ...so this handles requests for `GET /app/index.html`
+                    .route("/index.html", web::get().to(index)),
+            )
     })
     .bind("127.0.0.1:8080")?
     .run()
