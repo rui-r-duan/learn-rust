@@ -37,6 +37,7 @@
   cargo test -- --ignored
   cargo test --test <integration_test's crate_name or function_name>
   cargo test -p <crate in a workspace>
+  cargo test --features <feature_name>  # for #[cfg(feature = "feature_name")]
 #+end_src
 
   In the *<proj_root>/tests/* directory, Cargo will compile each of the files as
@@ -54,6 +55,16 @@
 #+begin_src shell
   rustc --explain E0308
 #+end_src
+* macros
+#+begin_verse
+#[derive(Clone, PartialEq, Debug)]
+#![allow(unused)]
+unimplemented!()
+#[cfg(test)]
+#[test]
+println!
+unimplemented!
+#+end_verse
 * THOUGHTS
 ** Don't abuse variable shadowing.
 #+begin_quote
@@ -355,6 +366,11 @@ our code if the values don’t implement the traits that the trait objects need.
   option.is_some()
   option.is_none()
   option.unwrap()
+#+end_src
+* Vector to HashSet
+#+begin_src rust
+    let set: std::collections::HashSet<&str> =
+        ["hello", "€a", "banana", "a⬂"].iter().cloned().collect();
 #+end_src
 * Cautions
 ** std::process::exit()
