@@ -11,9 +11,13 @@ struct Cli {
     path: std::path::PathBuf,
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+#[derive(Debug)]
+struct CustomError(String);
+
+fn main() -> Result<(), CustomError> {
     let args = Cli::parse();
-    let content = std::fs::read_to_string(&args.path)?;
+    let content = std::fs::read_to_string(&args.path)
+        .map_err(|err| CustomError(format!("Error reading `{:?}`: {}", &args.path, err)))?;
     println!("file content: {}", content);
 
     for line in content.lines() {
