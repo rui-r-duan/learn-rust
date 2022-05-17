@@ -383,3 +383,11 @@ From the Rust book:
 While to_lowercase will handle basic Unicode, it won't be 100% accurate.  If we
 were writing a real application, we'd want to do a bit more work here.
 #+end_quote
+* auto adjustments (coercion)
+  It (the deref algorithm) will deref as many times as possible (&&String ->
+  &String -> String -> str) and then reference at max once (str -> &str).
+
+  - auto deref
+  - auto unsize
+  - auto ref
+  https://stackoverflow.com/questions/28519997/what-are-rusts-exact-auto-dereferencing-rules
