@@ -210,8 +210,6 @@ To learn more, run the command again with --verbose.
      borrows or moves captured values
 * Compared with Swift
 https://dev.to/rhymu8354/swift-vs-rust-an-overview-of-swift-from-a-rusty-perspective-18c7
-* It is a design error to use an empty tuple to denote the Void type
-  I like the Oz's design: an operation does not return anything.
 * ANSI colors
 #+begin_src rust
   const ANSI_BLACK: &str = "\x1b[0;30m";
