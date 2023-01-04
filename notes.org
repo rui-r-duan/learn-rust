@@ -4,6 +4,12 @@
 #+begin_src shell
   rustup update
   rustup doc --book
+  rustup toolchain install nightly (or beta or stable)
+  rustup default
+  rustup default nightly
+  rustup override set nightly
+  rustup override unset
+  rustup show
 #+end_src
 * cargo
 #+begin_src shell
@@ -51,6 +57,10 @@
   in *<proj_root>/tests/common/mod.rs*.  If we rename mod.rs to other name,
   Cargo won't be able to find the module definition, because there is no
   *<proj_root>/tests/common.rs* as a guide.
+
+  cargo +nightly test
+
+  cargo +nightly bench --test test-file-name
 * rustc
 #+begin_src shell
   rustc --explain E0308
