@@ -157,7 +157,7 @@ mod tests {
         assert_eq!(list.pop(), Some(4));
 
         // Check exhaustion
-        // assert_eq!(list.pop(), Some(1));
-        // assert_eq!(list.pop(), None);
+        assert_eq!(list.pop(), Some(1));
+        assert_eq!(list.pop(), None);
     }
 }
