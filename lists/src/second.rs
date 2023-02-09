@@ -133,4 +133,16 @@ mod tests {
         assert_eq!(iter.next(), Some(1));
         assert_eq!(iter.next(), None);
     }
+
+    #[test]
+    fn into_iter_2() {
+        let mut list = List::new();
+        list.push(1);
+        list.push(2);
+        list.push(3);
+
+        for x in list.into_iter() {
+            println!("{x}");
+        }
+    }
 }
