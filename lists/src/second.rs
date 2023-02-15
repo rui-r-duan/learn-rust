@@ -94,6 +94,8 @@ impl<T> Iterator for IntoIter<T> {
 impl<'a, T> Iterator for Iter<'a, T> {
     type Item = &'a T;
     fn next(&mut self) -> Option<Self::Item> {
+        // self.next is Option<&> which is a Copy, so Option::map() can consume
+        // it.
         self.next.map(|node| {
             // equivalences:
             //
@@ -109,6 +111,9 @@ impl<'a, T> Iterator for Iter<'a, T> {
 impl<'a, T> Iterator for IterMut<'a, T> {
     type Item = &'a mut T;
     fn next(&mut self) -> Option<Self::Item> {
+        // self.next is Option<&mut> which is not a Copy, so Option::map() cannot
+        // consume it, which means it cannot be moved out.  Instead we must used
+        // Option::take() to swap it out for consumption.
         self.next.take().map(|node| {
             self.next = node.next.as_deref_mut();
             &mut node.elem
