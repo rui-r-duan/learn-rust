@@ -1,6 +1,14 @@
+// Some implementations are bad although they just work.
+
 #[derive(Debug)]
 enum List {
     Cons(i32, Box<List>),
+    Nil,
+}
+
+#[derive(Debug)]
+enum RefList<'a> {
+    Cons(i32, &'a RefList<'a>),
     Nil,
 }
 
@@ -31,18 +39,26 @@ impl RefCellList {
     }
 }
 
-use crate::List::{Cons, Nil};
-use RcList::{Cons as RcCons, Nil as RcNil};
-use RcCellList::{Cons as RcCellCons, Nil as RcCellNil};
-use RefCellList::{Cons as RefCellCons, Nil as RefCellNil};
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
+use List::{Cons, Nil};
+use RcCellList::{Cons as RcCellCons, Nil as RcCellNil};
+use RcList::{Cons as RcCons, Nil as RcNil};
+use RefCellList::{Cons as RefCellCons, Nil as RefCellNil};
+use RefList::{Cons as RefCons, Nil as RefNil};
 
 fn main() {
     // List
     let list = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
 
     println!("-------- Cons(i32, Box<List>) --------");
+    println!("list = {:?}", list);
+
+    // RefList
+    // List
+    let list = RefCons(1, &RefCons(2, &(RefCons(3, &RefNil))));
+
+    println!("-------- Cons(i32, &RefList) --------");
     println!("list = {:?}", list);
 
     // RcList
