@@ -133,6 +133,14 @@ impl<T> List<T> {
             .as_ref()
             .map(|node| RefMut::map(node.borrow_mut(), |node| &mut node.elem))
     }
+
+    pub fn into_iter(self) -> IntoIter<T> {
+        IntoIter(self)
+    }
+
+    pub fn iter(&self) -> Iter<T> {
+        Iter(self.head.as_ref().map(|head| head.borrow()))
+    }
 }
 
 impl<T> Default for List<T> {
@@ -149,12 +157,6 @@ impl<T> Drop for List<T> {
 
 pub struct IntoIter<T>(List<T>);
 
-impl<T> List<T> {
-    pub fn into_iter(self) -> IntoIter<T> {
-        IntoIter(self)
-    }
-}
-
 impl<T> Iterator for IntoIter<T> {
     type Item = T;
     fn next(&mut self) -> Option<Self::Item> {
@@ -167,6 +169,64 @@ impl<T> DoubleEndedIterator for IntoIter<T> {
         self.0.pop_back()
     }
 }
+
+pub struct Iter<'a, T>(Option<Ref<'a, Node<T>>>);
+
+// impl<'a, T> Iterator for Iter<'a, T> {
+//     type Item = Ref<'a, T>;
+//     // error[E0521]: borrowed data escapes outside of closure
+//     //    --> src/fourth.rs:179:13
+//     //     |
+//     // 177 |     fn next(&mut self) -> Option<Self::Item> {
+//     //     |             --------- `self` declared here, outside of the closure body
+//     // 178 |         self.0.take().map(|node_ref| {
+//     // 179 |             self.0 = node_ref.next.as_ref().map(|head| head.borrow());
+//     //     |             ^^^^^^   -------- borrow is only valid in the closure body
+//     //     |             |
+//     //     |             reference to `node_ref` escapes the closure body here
+
+//     // error[E0505]: cannot move out of `node_ref` because it is borrowed
+//     //    --> src/fourth.rs:180:22
+//     //     |
+//     // 177 |     fn next(&mut self) -> Option<Self::Item> {
+//     //     |             --------- lifetime `'1` appears in the type of `self`
+//     // 178 |         self.0.take().map(|node_ref| {
+//     // 179 |             self.0 = node_ref.next.as_ref().map(|head| head.borrow());
+//     //     |             ------   -------- borrow of `node_ref` occurs here
+//     //     |             |
+//     //     |             assignment requires that `node_ref` is borrowed for `'1`
+//     // 180 |             Ref::map(node_ref, |node| &node.elem)
+//     //     |                      ^^^^^^^^ move out of `node_ref` occurs here
+
+//     fn next(&mut self) -> Option<Self::Item> {
+//         self.0.take().map(|node_ref| {
+//             self.0 = node_ref.next.as_ref().map(|head| head.borrow());
+//             Ref::map(node_ref, |node| &node.elem)
+//         })
+//     }
+// }
+
+// impl<'a, T> Iterator for Iter<'a, T> {
+//     type Item = Ref<'a, T>;
+//     // error[E0521]: borrowed data escapes outside of closure
+//     //    --> src/fourth.rs:214:13
+//     //     |
+//     // 211 |     fn next(&mut self) -> Option<Self::Item> {
+//     //     |             --------- `self` declared here, outside of the closure body
+//     // ...
+//     // 214 |             self.0 = next.as_ref().map(|head| head.borrow());
+//     //     |             ^^^^^^   ------------- borrow is only valid in the closure body
+//     //     |             |
+//     //     |             reference to `next` escapes the closure body here
+
+//     fn next(&mut self) -> Option<Self::Item> {
+//         self.0.take().map(|node_ref| {
+//             let (next, elem) = Ref::map_split(node_ref, |node| (&node.next, &node.elem));
+//             self.0 = next.as_ref().map(|head| head.borrow());
+//             elem
+//         })
+//     }
+// }
 
 #[cfg(test)]
 mod test {
