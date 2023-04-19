@@ -80,10 +80,9 @@ impl<T> List<T> {
     }
 
     pub fn peek_front(&self) -> Option<Ref<T>> {
-        self.head.as_ref().map(|node| {
-            let x = node.borrow();
-            Ref::map(x, |node| &node.elem)
-        })
+        self.head
+            .as_ref()
+            .map(|node| Ref::map(node.borrow(), |node| &node.elem))
     }
 
     pub fn push_back(&mut self, elem: T) {
@@ -223,6 +222,58 @@ pub struct Iter<'a, T>(Option<Ref<'a, Node<T>>>);
 //         self.0.take().map(|node_ref| {
 //             let (next, elem) = Ref::map_split(node_ref, |node| (&node.next, &node.elem));
 //             self.0 = next.as_ref().map(|head| head.borrow());
+//             elem
+//         })
+//     }
+// }
+
+// impl<'a, T> Iterator for Iter<'a, T> {
+//     type Item = Ref<'a, T>;
+//     // error[E0308]: mismatched types
+//     //    --> src/fourth.rs:237:22
+//     //     |
+//     // 237 |                 Some(Ref::map(next, |next| &**next.as_ref().unwrap()))
+//     //     |                 ---- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected struct `Node`, found struct `RefCell`
+//     //     |                 |
+//     //     |                 arguments to this enum variant are incorrect
+//     //     |
+//     //     = note: expected struct `Ref<'_, fourth::Node<_>>`
+//     //                found struct `Ref<'_, RefCell<fourth::Node<_>>>`
+//     // help: the type constructed contains `Ref<'_, RefCell<fourth::Node<T>>>` due to the type of the argument passed
+//     //    --> src/fourth.rs:237:17
+//     //     |
+//     // 237 |                 Some(Ref::map(next, |next| &**next.as_ref().unwrap()))
+//     //     |                 ^^^^^------------------------------------------------^
+//     //     |                      |
+//     //     |                      this argument influences the type of `Some`
+//     // note: tuple variant defined here
+//     //    --> /Users/rduan/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/src/rust/library/core/src/option.rs:570:5
+//     //     |
+//     // 570 |     Some(#[stable(feature = "rust1", since = "1.0.0")] T),
+//     //     |     ^^^^
+
+//     fn next(&mut self) -> Option<Self::Item> {
+//         self.0.take().map(|node_ref| {
+//             let (next, elem) = Ref::map_split(node_ref, |node| (&node.next, &node.elem));
+//             self.0 = if next.is_some() {
+//                 // next is of type Ref<Option<Rc<RefCell<Node<T>>>>>.
+//                 let x = next.unwrap();
+//                 let y = *x;
+
+//                 // After Ref::map(), we get Ref<'_, RefCell<Node<T>>>
+//                 // next of next: Ref<RefCell<Ref<RefCell>>>
+//                 // next of next of next: Ref<RefCell<Ref<RefCell<Ref<RefCell>>>>>
+//                 // ...
+//                 // The deeper we walk into the list, the more nested we become
+//                 // under each RefCell. We would need to maintain, like, a stack
+//                 // of Refs to represent all the outstanding loans we're
+//                 // holding, because if we stop looking at an element we need to
+//                 // decrement the borrow-count on every RefCell that comes
+//                 // before it.
+//                 Some(Ref::map(next, |next| &**next.as_ref().unwrap()))
+//             } else {
+//                 None
+//             };
 //             elem
 //         })
 //     }
