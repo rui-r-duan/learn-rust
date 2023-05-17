@@ -20,7 +20,13 @@ impl<T> List<T> {
         List {
             head: Some(Rc::new(Node {
                 elem,
-                next: self.head.clone(),
+                // Equivalences:
+                // next: self.head.as_ref().map(|rcnode| Rc::clone(rcnode)),
+                // next: self.head.as_ref().map(|rcnode: &Rc<Node<T>>| Rc::clone(&rcnode)), &rcnode will be immediately dereferenced to match Rc<Node<T>>::clone() function call
+                // See:
+                // file:///Users/rduan/.rustup/toolchains/stable-x86_64-apple-darwin/share/doc/rust/html/book/ch05-03-method-syntax.html#wheres-the---operator
+                // https://doc.rust-lang.org/nomicon/dot-operator.html
+                next: self.head.clone(), // calls Option::clone() which calls Rc::clone()
             })),
         }
     }
