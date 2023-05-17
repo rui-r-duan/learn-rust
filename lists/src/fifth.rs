@@ -122,3 +122,131 @@
 //----------------------------------------------------------------
 // END SELF REFERENCING SOLUTION
 //----------------------------------------------------------------
+
+//----------------------------------------------------------------
+// RAW POINTER SOLUTION
+//----------------------------------------------------------------
+
+// Unsafe Rust is a superset of Safe Rust. It's completely the same as Safe
+// Rust in all its semantics and rules, you're just allowed to do a few extra
+// things that are wildly unsafe and can cause the dreaded Undefined Behaviour
+// that haunts C.
+
+// Raw pointers are basically C's pointers. They have no inherent aliasing
+// rules. They have no lifetimes. They can be null. They can be
+// misaligned. They can be dangling. They can point to uninitialized
+// memory. They can be cast to and from integers. They can be cast to point to
+// a different type. Mutability? Cast it. Pretty much everything goes, and that
+// means pretty much anything can go wrong.
+
+// There are two kinds of raw pointer: *const T and *mut T.
+
+// You can only dereference a *const T to an &T, but much like the mutability
+// of a variable, this is just a lint against incorrect usage. At most it just
+// means you have to cast the *const to a *mut first. Although if you don't
+// actually have permission to mutate the referent of the pointer, you're gonna
+// have a bad time.
+
+// For now, *mut T == &unchecked mut T!
+use std::ptr;
+
+pub struct List<T> {
+    head: Link<T>,
+    tail: *mut Node<T>, // DANGER DANGER
+}
+
+type Link<T> = Option<Box<Node<T>>>;
+
+struct Node<T> {
+    elem: T,
+    next: Link<T>,
+}
+
+impl<T> List<T> {
+    pub fn new() -> Self {
+        List {
+            head: None,
+            tail: ptr::null_mut(), // 0 as *mut _
+        }
+    }
+
+    pub fn push(&mut self, elem: T) {
+        let mut new_tail = Box::new(Node {
+            elem: elem,
+            next: None,
+        });
+
+        let raw_tail: *mut _ = &mut *new_tail;
+
+        if !self.tail.is_null() {
+            // Hello Compiler, I Know I Am Doing Something Dangerous And
+            // I Promise To Be A Good Programmer Who Never Makes Mistakes.
+            unsafe {
+                (*self.tail).next = Some(new_tail);
+            }
+        } else {
+            self.head = Some(new_tail);
+        }
+
+        self.tail = raw_tail;
+    }
+
+    pub fn pop(&mut self) -> Option<T> {
+        self.head.take().map(|head| {
+            let head = *head;
+            self.head = head.next;
+
+            if self.head.is_none() {
+                self.tail = ptr::null_mut()
+            }
+
+            head.elem
+        })
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::List;
+    #[test]
+    fn basics() {
+        let mut list = List::new();
+
+        // Check empty list behaves right
+        assert_eq!(list.pop(), None);
+
+        // Populate list
+        list.push(1);
+        list.push(2);
+        list.push(3);
+
+        // Check normal removal
+        assert_eq!(list.pop(), Some(1));
+        assert_eq!(list.pop(), Some(2));
+
+        // Push some more just to make sure nothing's corrupted
+        list.push(4);
+        list.push(5);
+
+        // Check normal removal
+        assert_eq!(list.pop(), Some(3));
+        assert_eq!(list.pop(), Some(4));
+
+        // Check exhaustion
+        assert_eq!(list.pop(), Some(5));
+        assert_eq!(list.pop(), None);
+
+        // Check the exhaustion case fixed the pointer right
+        list.push(6);
+        list.push(7);
+
+        // Check normal removal
+        assert_eq!(list.pop(), Some(6));
+        assert_eq!(list.pop(), Some(7));
+        assert_eq!(list.pop(), None);
+    }
+}
+
+//----------------------------------------------------------------
+// END RAW POINTER SOLUTION
+//----------------------------------------------------------------
