@@ -55,7 +55,7 @@
 //         });
 
 //         let new_tail = match self.tail.take() {
-//             Some(mut old_tail) => {
+//             Some(old_tail) => {
 //                 // If the old tail existed, update it to point to the new tail
 //                 old_tail.next = Some(new_tail);
 //                 old_tail.next.as_deref_mut()
@@ -171,10 +171,7 @@ impl<T> List<T> {
     }
 
     pub fn push(&mut self, elem: T) {
-        let mut new_tail = Box::new(Node {
-            elem: elem,
-            next: None,
-        });
+        let mut new_tail = Box::new(Node { elem, next: None });
 
         let raw_tail: *mut _ = &mut *new_tail;
 
@@ -244,6 +241,21 @@ mod test {
         assert_eq!(list.pop(), Some(6));
         assert_eq!(list.pop(), Some(7));
         assert_eq!(list.pop(), None);
+    }
+
+    #[test]
+    fn test_option_as_deref_mut() {
+        let mut x: Option<String> = Some("hey".to_owned());
+        let y = x.as_deref_mut().map(|x| {
+            x.make_ascii_uppercase();
+            x
+        });
+        let mut tmp = "HEY".to_owned();
+        let z = Some(tmp.as_mut_str());
+        assert_eq!(y, z);
+
+        let xx = x.as_deref().map(|x| x.to_ascii_uppercase());
+        assert_eq!(xx, Some(tmp));
     }
 }
 
