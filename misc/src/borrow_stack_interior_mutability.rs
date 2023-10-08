@@ -12,7 +12,7 @@ fn main() {
     // mref1, ptr2, and sref3 are considered the same reborrow.
     //
     // Borrow Stack:
-    // [mref(aka ptr2, sref3)]
+    // [mref1(aka ptr2, sref3)]
     unsafe {
         let mut data = Cell::new(10);
         let mref1: &mut Cell<i32> = &mut data;
@@ -43,7 +43,7 @@ fn main() {
     }
 
     // Borrow Stack:
-    // [mref1(aka ptr3, sref3)]
+    // [mref1(aka ptr2, sref3)]
     unsafe {
         let mut data = UnsafeCell::new(10);
         let mref1: &mut UnsafeCell<i32> = &mut data; // Mutable ref to the *outside*
@@ -65,7 +65,8 @@ fn main() {
     unsafe {
         let mut data = UnsafeCell::new(10);
         let mref1: &mut UnsafeCell<i32> = &mut data;
-        // These two are swapped so the borrows are *definitely* totally stacked
+        // These two are swapped so the borrows are *definitely* totally stacked.
+        // Here * actually does not do the dereferencing and access the content; &* is only address copy.
         let sref2: &UnsafeCell<i32> = &*mref1;
         // Derive the ptr from the shared ref to be super safe!
         let ptr3: *mut i32 = sref2.get();
