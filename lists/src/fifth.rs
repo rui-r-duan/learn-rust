@@ -124,7 +124,7 @@
 //----------------------------------------------------------------
 
 //----------------------------------------------------------------
-// RAW POINTER SOLUTION
+// RAW POINTER AND BOX SOLUTION
 //----------------------------------------------------------------
 
 // Unsafe Rust is a superset of Safe Rust. It's completely the same as Safe
@@ -148,14 +148,94 @@
 // have a bad time.
 
 // For now, *mut T == &unchecked mut T!
-use std::ptr;
+// use std::ptr;
+
+// pub struct List<T> {
+//     head: Link<T>,
+//     tail: *mut Node<T>, // DANGER DANGER
+// }
+
+// type Link<T> = Option<Box<Node<T>>>;
+
+// struct Node<T> {
+//     elem: T,
+//     next: Link<T>,
+// }
+
+// impl<T> List<T> {
+//     pub fn new() -> Self {
+//         List {
+//             head: None,
+//             tail: ptr::null_mut(), // 0 as *mut _
+//         }
+//     }
+
+//     //     |
+//     // 497 | pub unsafe fn drop_in_place<T: ?Sized>(to_drop: *mut T) {
+//     //     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//     //     | |
+//     //     | trying to retag from <92962> for Unique permission at alloc24416[0x0], but that tag does not exist in the borrow stack for this location
+//     //     | this error occurs as part of retag at alloc24416[0x0..0x8]
+//     //     |
+//     //     = help: this indicates a potential bug in the program: it performed an invalid operation, but the Stacked Borrows rules it violated are still experimental
+//     //     = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md for further information
+//     // help: <92962> was created by a SharedReadWrite retag at offsets [0x0..0x10]
+//     //    --> src/fifth.rs:176:32
+//     //     |
+//     // 176 |         let raw_tail: *mut _ = &mut *new_tail;
+//     //     |                                ^^^^^^^^^^^^^^
+//     // help: <92962> was later invalidated at offsets [0x0..0x10] by a Unique retag
+//     //    --> src/fifth.rs:185:30
+//     //     |
+//     // 185 |             self.head = Some(new_tail);
+//     //     |                              ^^^^^^^^
+//     pub fn push(&mut self, elem: T) {
+//         let mut new_tail = Box::new(Node { elem, next: None });
+
+//         let raw_tail: *mut _ = &mut *new_tail;
+
+//         if !self.tail.is_null() {
+//             // Hello Compiler, I Know I Am Doing Something Dangerous And
+//             // I Promise To Be A Good Programmer Who Never Makes Mistakes.
+//             unsafe {
+//                 (*self.tail).next = Some(new_tail);
+//             }
+//         } else {
+//             self.head = Some(new_tail);
+//         }
+
+//         self.tail = raw_tail;
+//     }
+
+//     pub fn pop(&mut self) -> Option<T> {
+//         self.head.take().map(|head| {
+//             let head = *head;
+//             self.head = head.next;
+
+//             if self.head.is_none() {
+//                 self.tail = ptr::null_mut()
+//             }
+
+//             head.elem
+//         })
+//     }
+// }
+
+//----------------------------------------------------------------
+// END RAW POINTER AND BOX SOLUTION
+//----------------------------------------------------------------
+
+//----------------------------------------------------------------
+// PURE RAW POINTER SOLUTION
+//----------------------------------------------------------------
+use ptr;
 
 pub struct List<T> {
     head: Link<T>,
-    tail: *mut Node<T>, // DANGER DANGER
+    tail: Link<T>,
 }
 
-type Link<T> = Option<Box<Node<T>>>;
+type Link<T> = *mut Node<T>; // much better
 
 struct Node<T> {
     elem: T,
@@ -165,42 +245,56 @@ struct Node<T> {
 impl<T> List<T> {
     pub fn new() -> Self {
         List {
-            head: None,
-            tail: ptr::null_mut(), // 0 as *mut _
+            head: ptr::null_mut(),
+            tail: ptr::null_mut(),
         }
     }
 
     pub fn push(&mut self, elem: T) {
-        let mut new_tail = Box::new(Node { elem, next: None });
+        unsafe {
+            // Immediately convert the Box into a raw pointer
+            let new_tail = Box::into_raw(Box::new(Node {
+                elem,
+                next: ptr::null_mut(),
+            }));
 
-        let raw_tail: *mut _ = &mut *new_tail;
-
-        if !self.tail.is_null() {
-            // Hello Compiler, I Know I Am Doing Something Dangerous And
-            // I Promise To Be A Good Programmer Who Never Makes Mistakes.
-            unsafe {
-                (*self.tail).next = Some(new_tail);
+            if !self.tail.is_null() {
+                (*self.tail).next = new_tail;
+            } else {
+                self.head = new_tail;
             }
-        } else {
-            self.head = Some(new_tail);
-        }
 
-        self.tail = raw_tail;
+            self.tail = new_tail;
+        }
     }
 
     pub fn pop(&mut self) -> Option<T> {
-        self.head.take().map(|head| {
-            let head = *head;
-            self.head = head.next;
+        unsafe {
+            if self.head.is_null() {
+                None
+            } else {
+                // RISE FROM THE GRAVE
+                let head = Box::from_raw(self.head);
+                self.head = head.next;
 
-            if self.head.is_none() {
-                self.tail = ptr::null_mut()
+                if self.head.is_null() {
+                    self.tail = ptr::null_mut();
+                }
+
+                Some(head.elem)
             }
-
-            head.elem
-        })
+        }
     }
 }
+
+impl<T> Drop for List<T> {
+    fn drop(&mut self) {
+        while let Some(_) = self.pop() {}
+    }
+}
+//----------------------------------------------------------------
+// END PURE RAW POINTER SOLUTION
+//----------------------------------------------------------------
 
 #[cfg(test)]
 mod test {
@@ -258,7 +352,3 @@ mod test {
         assert_eq!(xx, Some(tmp));
     }
 }
-
-//----------------------------------------------------------------
-// END RAW POINTER SOLUTION
-//----------------------------------------------------------------
