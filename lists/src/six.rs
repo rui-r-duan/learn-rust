@@ -209,8 +209,8 @@ impl<T> LinkedList<T> {
         unsafe { self.back.map(|node| &(*node.as_ptr()).elem) }
     }
 
-    pub fn back_mut(&mut self) -> Option<&T> {
-        unsafe { self.back.map(|node| &(*node.as_ptr()).elem) }
+    pub fn back_mut(&mut self) -> Option<&mut T> {
+        unsafe { self.back.map(|node| &mut (*node.as_ptr()).elem) }
     }
 
     pub fn len(&self) -> usize {
