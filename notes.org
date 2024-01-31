@@ -399,3 +399,8 @@ were writing a real application, we'd want to do a bit more work here.
   - auto unsize
   - auto ref
   https://stackoverflow.com/questions/28519997/what-are-rusts-exact-auto-dereferencing-rules
+* opt out Send or Sync marker
+  To mark MyType to be NOT Send:
+#+begin_src rust
+  impl !Send for MyType {}
+#+end_src
