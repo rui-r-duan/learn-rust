@@ -54,6 +54,12 @@ pub struct IntoIter<T> {
     list: LinkedList<T>,
 }
 
+pub struct CursorMut<'a, T> {
+    cur: Link<T>,
+    list: &'a mut LinkedList<T>,
+    index: Option<usize>,
+}
+
 impl<T> LinkedList<T> {
     pub fn new() -> Self {
         Self {
@@ -199,8 +205,9 @@ impl<T> LinkedList<T> {
         // unsafe { Some(&(*self.front?.as_ptr()).elem) }
     }
 
-    // The `&mut` on `self` is optional.  Even `&self` allows returning `&mut` of
-    // the front node's elem.
+    // Although `&self` allows returning `&mut` of the front node's elem,
+    // the `&mut` on `self` is NOT optional, because it can prevent
+    // other mutable references of the list.
     pub fn front_mut(&mut self) -> Option<&mut T> {
         unsafe { self.front.map(|node| &mut (*node.as_ptr()).elem) }
     }
@@ -246,6 +253,14 @@ impl<T> LinkedList<T> {
     pub fn clear(&mut self) {
         // Oh look it's drop again
         while let Some(_) = self.pop_front() {}
+    }
+
+    pub fn cursor_mut(&mut self) -> CursorMut<T> {
+        CursorMut {
+            list: self,
+            cur: None,
+            index: None,
+        }
     }
 }
 
@@ -526,6 +541,198 @@ fn assert_properties() {
     fn iter_mut_invariant() {}
 }
 
+impl<'a, T> CursorMut<'a, T> {
+    pub fn index(&self) -> Option<usize> {
+        self.index
+    }
+
+    pub fn move_next(&mut self) {
+        if let Some(cur) = self.cur {
+            unsafe {
+                // We're on a real element, go to its next (back)
+                self.cur = (*cur.as_ptr()).back;
+                if self.cur.is_some() {
+                    *self.index.as_mut().unwrap() += 1;
+                } else {
+                    // We just walked to the ghost, no more index
+                    self.index = None;
+                }
+            }
+        } else if !self.list.is_empty() {
+            // We're at the ghost, and there is a real front, so move to it!
+            self.cur = self.list.front;
+            self.index = Some(0);
+        } else {
+            // We're at the ghost, but that's the only element ... do nothing.
+        }
+    }
+
+    pub fn move_prev(&mut self) {
+        if let Some(cur) = self.cur {
+            unsafe {
+                // We're on a real element, go to its previous (front)
+                self.cur = (*cur.as_ptr()).front;
+                if self.cur.is_some() {
+                    *self.index.as_mut().unwrap() -= 1;
+                } else {
+                    // We just walked to the ghost, no more index
+                    self.index = None;
+                }
+            }
+        } else if !self.list.is_empty() {
+            // We're at the ghost, and there is a real back, so move to it!
+            self.cur = self.list.back;
+            self.index = Some(self.list.len - 1);
+        } else {
+            // We're at the ghost, but that's the only element ... do nothing.
+        }
+    }
+
+    pub fn current(&mut self) -> Option<&mut T> {
+        unsafe { self.cur.map(|node| &mut (*node.as_ptr()).elem) }
+    }
+
+    pub fn peek_next(&mut self) -> Option<&mut T> {
+        unsafe {
+            self.cur
+                .and_then(|node| (*node.as_ptr()).back)
+                .map(|node| &mut (*node.as_ptr()).elem)
+        }
+    }
+
+    pub fn peek_prev(&mut self) -> Option<&mut T> {
+        unsafe {
+            self.cur
+                .and_then(|node| (*node.as_ptr()).front)
+                .map(|node| &mut (*node.as_ptr()).elem)
+        }
+    }
+
+    pub fn split_before(&mut self) -> LinkedList<T> {
+        // We have this:
+        //
+        //     list.front -> A <-> B <-> C <-> D <- list.back
+        //                               ^
+        //                              cur
+        //
+        //
+        // And we want to produce this:
+        //
+        //     list.front -> C <-> D <- list.back
+        //                   ^
+        //                  cur
+        //
+        //
+        //    return.front -> A <-> B <- return.back
+        //
+        if let Some(cur) = self.cur {
+            // We are pointing at a real element, so the list is non-empty.
+            unsafe {
+                // Current state
+                let old_len = self.list.len;
+                let old_idx = self.index.unwrap();
+                let prev = (*cur.as_ptr()).front;
+
+                // What self will become
+                let new_len = old_len - old_idx;
+                let new_front = self.cur;
+                let new_back = self.list.back;
+                let new_idx = Some(0);
+
+                // What the output will become
+                let output_len = old_len - new_len;
+                let output_front = self.list.front;
+                let output_back = prev;
+
+                // Break the links between cur and prev
+                if let Some(prev) = prev {
+                    (*cur.as_ptr()).front = None;
+                    (*prev.as_ptr()).back = None;
+                }
+
+                // Product the result:
+                self.list.len = new_len;
+                self.list.front = new_front;
+                self.list.back = new_back;
+                self.index = new_idx;
+
+                LinkedList {
+                    front: output_front,
+                    back: output_back,
+                    len: output_len,
+                    _boo: PhantomData,
+                }
+            }
+        } else {
+            // We're at the ghost, just replace our list with an empty one.
+            // Noe other state needs to be changed.
+            std::mem::replace(self.list, LinkedList::new())
+        }
+    }
+
+    pub fn split_after(&mut self) -> LinkedList<T> {
+        // We have this:
+        //
+        //     list.front -> A <-> B <-> C <-> D <- list.back
+        //                         ^
+        //                        cur
+        //
+        //
+        // And we want to produce this:
+        //
+        //     list.front -> A <-> B <- list.back
+        //                         ^
+        //                        cur
+        //
+        //
+        //    return.front -> C <-> D <- return.back
+        //
+        if let Some(cur) = self.cur {
+            // We are pointing at a real element, so the list is non-empty.
+            unsafe {
+                // Current state
+                let old_len = self.list.len;
+                let old_idx = self.index.unwrap();
+                let next = (*cur.as_ptr()).back.take();
+
+                // What self will become
+                let new_len = old_idx + 1;
+                let new_back = self.cur;
+                // let new_front = self.list.front;
+                let new_idx = Some(old_idx);
+
+                // What the output will become
+                let output_len = old_len - new_len;
+                let output_front = next;
+                let output_back = self.list.back;
+
+                // Break the links between cur and next
+                if let Some(next) = next {
+                    // (*cur.as_ptr()).back = None; // We have taken it into `next`
+                    (*next.as_ptr()).front = None;
+                }
+
+                // Product the result:
+                self.list.len = new_len;
+                // self.list.front = new_front; // self.list.front remains the same
+                self.list.back = new_back;
+                self.index = new_idx;
+
+                LinkedList {
+                    front: output_front,
+                    back: output_back,
+                    len: output_len,
+                    _boo: PhantomData,
+                }
+            }
+        } else {
+            // We're at the ghost, just replace our list with an empty one.
+            // No other state needs to be changed.
+            std::mem::replace(self.list, LinkedList::new())
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::LinkedList;
@@ -796,5 +1003,44 @@ mod test {
         assert_eq!(map.remove(&list2), Some("list2"));
 
         assert!(map.is_empty());
+    }
+
+    #[test]
+    fn test_cursor_move_peek() {
+        let mut m: LinkedList<u32> = LinkedList::new();
+        m.extend([1, 2, 3, 4, 5, 6]);
+        let mut cursor = m.cursor_mut();
+        assert_eq!(cursor.current(), None); // at the ghost
+        assert_eq!(cursor.peek_next(), None);
+        assert_eq!(cursor.peek_prev(), None);
+        assert_eq!(cursor.index(), None);
+
+        cursor.move_next(); // from the ghost to frontend
+        assert_eq!(cursor.current(), Some(&mut 1));
+        assert_eq!(cursor.peek_next(), Some(&mut 2));
+        assert_eq!(cursor.peek_prev(), None);
+        assert_eq!(cursor.index(), Some(0));
+
+        cursor.move_prev(); // at the ghost again
+        assert_eq!(cursor.current(), None);
+        assert_eq!(cursor.peek_next(), None);
+        assert_eq!(cursor.peek_prev(), None);
+        assert_eq!(cursor.index(), None);
+
+        cursor.move_prev(); // from the ghost to backend
+        assert_eq!(cursor.current(), Some(&mut 6));
+        assert_eq!(cursor.index(), Some(5));
+
+        cursor.move_next(); // from backend to the ghost
+        assert_eq!(cursor.current(), None);
+        assert_eq!(cursor.peek_next(), None);
+        assert_eq!(cursor.peek_prev(), None);
+        assert_eq!(cursor.index(), None);
+
+        cursor.move_next(); // from the ghost to frontend
+        assert_eq!(cursor.current(), Some(&mut 1));
+        assert_eq!(cursor.peek_next(), Some(&mut 2));
+        assert_eq!(cursor.peek_prev(), None);
+        assert_eq!(cursor.index(), Some(0));
     }
 }
