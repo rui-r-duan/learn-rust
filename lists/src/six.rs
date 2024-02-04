@@ -138,7 +138,7 @@ impl<T> LinkedList<T> {
             self.front.map(|node| {
                 // Bring the Box back to life so we can move out its value and
                 // Drop it (Box continues to magically understand this for us).
-                let boxed_node = Box::from_raw(node.as_ptr()); // It can panic!
+                let boxed_node = Box::from_raw(node.as_ptr());
                 let result = boxed_node.elem;
 
                 // Make the next node into the new front.
