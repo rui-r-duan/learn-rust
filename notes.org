@@ -304,7 +304,7 @@ The following four versions are equivalent.
 ** Compile time polymorphism (static dispatch): bounded parametric polymorphism
    *Generics* and *Trait bounds* is preferable for homogeneous collections,
    because the definitions will be /monomorphized/ at compile time to use the
-   concret types.
+   concrete types.
 #+begin_src rust
   pub struct Screen<T: Draw> {
       // The vector can hold only one type of objects, such as Button or TextField.
@@ -404,3 +404,7 @@ were writing a real application, we'd want to do a bit more work here.
 #+begin_src rust
   impl !Send for MyType {}
 #+end_src
+* asm
+#+begin_verse
+RUSTFLAGS="--emit asm -C llvm-args=-x86-asm-syntax=intel" cargo build --release
+#+end_verse
