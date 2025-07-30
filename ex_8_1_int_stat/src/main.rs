@@ -1,4 +1,3 @@
-use std::convert::TryInto;
 use std::collections::HashMap;
 
 fn mean(a: &Vec<i32>) -> i32 {
@@ -23,20 +22,20 @@ fn median(a: &Vec<i32>) -> i32 {
 fn mode(a: &Vec<i32>) -> i32 {
     let mut count: HashMap<i32, i32> = HashMap::new();
     for i in a.iter() {
-	let n = count.entry(*i).or_insert(0);
-	*n += 1;
+        let n = count.entry(*i).or_insert(0);
+        *n += 1;
     }
     let (mut max_key, mut max_freq) = (-1, -1);
     // print_type_of(&max_key);
     // print_type_of(&max_freq);
     for (&k, &c) in &count {
-	// println!("{} {}", k, c);
-	// print_type_of(&k);
-	// print_type_of(&c);
-	if c > max_freq {
-	    max_freq = c;
-	    max_key = k;
-	}
+        // println!("{} {}", k, c);
+        // print_type_of(&k);
+        // print_type_of(&c);
+        if c > max_freq {
+            max_freq = c;
+            max_key = k;
+        }
     }
     max_key
 }
