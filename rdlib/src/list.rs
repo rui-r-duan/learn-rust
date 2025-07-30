@@ -35,7 +35,7 @@ pub fn member<T: Copy + PartialEq>(x: T, first: &Link<T>) -> bool {
 pub fn cons<T: Copy>(x: T, next: &Link<T>) -> Link<T> {
     Some(Rc::new(Box::new(Node {
         elem: x,
-        next: rc_clone(next),
+        next: next.clone(),
     })))
 }
 
@@ -53,13 +53,6 @@ pub fn cdr<T: Copy>(list: &Link<T>) -> Link<T> {
             None => None,
             Some(next_node) => Some(Rc::clone(next_node)),
         },
-    }
-}
-
-fn rc_clone<T: Copy>(list: &Link<T>) -> Link<T> {
-    match list {
-        None => None,
-        Some(node) => Some(Rc::clone(node)),
     }
 }
 
